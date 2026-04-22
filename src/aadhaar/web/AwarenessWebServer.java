@@ -95,7 +95,7 @@ public final class AwarenessWebServer {
 
     public AwarenessWebServer(AwarenessService service, Path assetsDir, int port, boolean openBrowser) {
         this.service = Objects.requireNonNull(service);
-        this.assetsDir = Objects.requireNonNull(assetsDir);
+        this.assetsDir = Objects.requireNonNull(assetsDir).toAbsolutePath().normalize();
         this.port = port;
         this.openBrowser = openBrowser;
         this.renderer = new PageRenderer();
@@ -179,12 +179,13 @@ public final class AwarenessWebServer {
             try {
                 String requestPath = exchange.getRequestURI().getPath().replaceFirst("^/assets/", "");
                 Path requested = assetsDir.resolve(requestPath).normalize();
-                if (!requested.startsWith(assetsDir.toAbsolutePath().normalize()) || !Files.isRegularFile(requested)) {
+                if (!requested.startsWith(assetsDir) || !Files.isRegularFile(requested)) {
                     writeString(exchange, 404, "text/plain; charset=UTF-8", "Asset not found");
                     return;
                 }
                 byte[] bytes = Files.readAllBytes(requested);
                 exchange.getResponseHeaders().set("Content-Type", contentType(requested));
+                exchange.getResponseHeaders().set("Cache-Control", "no-store");
                 exchange.sendResponseHeaders(200, bytes.length);
                 exchange.getResponseBody().write(bytes);
             } finally {

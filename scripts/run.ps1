@@ -18,4 +18,10 @@ if ($LASTEXITCODE -ne 0) {
     throw "Compilation failed."
 }
 
-java -cp $outDir aadhaar.app.AadhaarDbtAwarenessApp
+Push-Location $root
+try {
+    java -cp $outDir aadhaar.app.AadhaarDbtAwarenessApp
+}
+finally {
+    Pop-Location
+}

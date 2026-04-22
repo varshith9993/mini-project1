@@ -2,6 +2,7 @@ package aadhaar.app;
 
 import aadhaar.backend.AwarenessService;
 import aadhaar.web.AwarenessWebServer;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class AadhaarDbtAwarenessApp {
@@ -17,9 +18,20 @@ public final class AadhaarDbtAwarenessApp {
             }
         }
 
-        AwarenessWebServer server = new AwarenessWebServer(new AwarenessService(), Path.of("assets"), port, openBrowser);
+        AwarenessWebServer server = new AwarenessWebServer(new AwarenessService(), locateAssetsDirectory(), port, openBrowser);
         server.start();
         System.out.println("Aadhaar DBT Awareness System is running at " + server.baseUrl());
+    }
+
+    private static Path locateAssetsDirectory() {
+        Path current = Path.of("").toAbsolutePath().normalize();
+        for (Path cursor = current; cursor != null; cursor = cursor.getParent()) {
+            Path candidate = cursor.resolve("assets").normalize();
+            if (Files.isDirectory(candidate)) {
+                return candidate;
+            }
+        }
+        return current.resolve("assets").normalize();
     }
 
     private static int parsePort(String value) {

@@ -1,0 +1,8 @@
+{
+  "name": "Fashion Marketplace UX Builder",
+  "id": "1483927650981730001",
+  "api": "1.0.0",
+  "main": "fashion.js",
+  "documentAccess": "dynamic-page",
+  "editorType": ["figma"]
+}

@@ -186,10 +186,15 @@ public final class AwarenessService {
 
     private List<VideoItem> videos() {
         return List.of(
-                new VideoItem("How to Check Aadhaar Bank Linking Status", "Resident-oriented explainer to understand the official check path before trusting a bank-side confirmation alone.", "YouTube", "https://www.youtube.com/watch?v=t2RfIMizWwc", "t2RfIMizWwc"),
+                new VideoItem("How to Register and Login to Aadhaar App", "Official UIDAI tutorial that shows the Aadhaar app entry flow and helps residents understand the starting point for mobile-based Aadhaar services.", "UIDAI / YouTube", "https://www.youtube.com/watch?v=t2RfIMizWwc", "t2RfIMizWwc"),
+                new VideoItem("How to Download Masked or Unmasked Aadhaar", "Official UIDAI tutorial explaining how residents can access Aadhaar download options from the Aadhaar app flow.", "UIDAI / YouTube", "https://www.youtube.com/watch?v=jNaqPc8-eeA", "jNaqPc8-eeA"),
+                new VideoItem("Aadhaar App Launch Video", "Official UIDAI awareness video introducing the Aadhaar app and its purpose for resident-facing digital services.", "UIDAI / YouTube", "https://www.youtube.com/watch?v=z5Hl0UlqBKk", "z5Hl0UlqBKk"),
+                new VideoItem("OVSE Use Cases Video", "Official UIDAI use-case video that explains where Aadhaar app features support identity verification in practical situations.", "UIDAI / YouTube", "https://www.youtube.com/watch?v=fBBQycZ7UhI", "fBBQycZ7UhI"),
+                new VideoItem("Share Contact Details", "Official UIDAI short video showing a real Aadhaar app use case that improves practical understanding of the platform.", "UIDAI / YouTube", "https://www.youtube.com/watch?v=UsQ_68qBi-4", "UsQ_68qBi-4"),
+                new VideoItem("Identity Verification at Event Entry Point", "Official UIDAI short video demonstrating Aadhaar-supported identity verification in an event access scenario.", "UIDAI / YouTube", "https://www.youtube.com/watch?v=yHwra5eVAW8", "yHwra5eVAW8"),
+                new VideoItem("mAadhaar Video KYC", "Official Aadhaar UIDAI video showing a real resident service flow that helps users understand app-based service usage.", "UIDAI / YouTube", "https://www.youtube.com/watch?v=H02T5q0h_fA", "H02T5q0h_fA"),
+                new VideoItem("Book Online Appointment For Aadhaar Update", "Official Aadhaar UIDAI video useful for understanding service access and update workflow.", "UIDAI / YouTube", "https://www.youtube.com/watch?v=8ZurY3nrv7U", "8ZurY3nrv7U"),
                 new VideoItem("UIDAI Official Channel Introduction", "Official channel launch reference from UIDAI for authentic Aadhaar awareness videos.", "UIDAI / YouTube", "https://www.youtube.com/watch?v=_JSMjK8wv40", "_JSMjK8wv40"),
-                new VideoItem("mAadhaar Video KYC", "Official Aadhaar UIDAI video showing a real resident service flow that helps users understand app-based service usage.", "Aadhaar UIDAI", "https://www.youtube.com/watch?v=H02T5q0h_fA", "H02T5q0h_fA"),
-                new VideoItem("Book Online Appointment For Aadhaar Update", "Official Aadhaar UIDAI video useful for understanding service access and update workflow.", "Aadhaar UIDAI", "https://www.youtube.com/watch?v=8ZurY3nrv7U", "8ZurY3nrv7U"),
                 new VideoItem("UIDAI Aadhaar App Videos", "Official UIDAI landing page that groups multiple Aadhaar app awareness videos and service tutorials.", "UIDAI", "https://uidai.gov.in/en/my-aadhaar/aadhaar-on-your-mobile/aadhaar-app-videos.html", ""),
                 new VideoItem("DBT Bharat Multimedia", "Government multimedia page for DBT background material and awareness support content.", "DBT Bharat", "https://dbtbharat.gov.in/multimedia/video", ""));
     }

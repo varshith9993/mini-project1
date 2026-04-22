@@ -129,7 +129,17 @@ public final class PageRenderer {
     }
 
     private String navLink(ViewState viewState, Section section, String label) {
-        return "<a class=\"nav-link%s\" href=\"%s\">%s</a>".formatted(viewState.section() == section ? " active" : "", sectionHref(section), escape(label));
+        return """
+                <a class="nav-link%s" href="%s">
+                  <span class="nav-badge %s">%s</span>
+                  <span class="nav-text">%s</span>
+                </a>
+                """.formatted(
+                viewState.section() == section ? " active" : "",
+                sectionHref(section),
+                escape(section.routeKey()),
+                escape(navBadge(section)),
+                escape(label));
     }
 
     private String renderPhaseStrip(ViewState viewState) {
@@ -158,12 +168,9 @@ public final class PageRenderer {
     private String renderHomeSection(ViewState viewState, AppContent content) {
         return """
                 <section class="main-section home-section">
-                  <div class="section-heading centered-heading">
-                    <h2>Home Phase</h2>
-                    <p>All main options from the top navigation are available here as landing cards so the user can directly open the required phase.</p>
-                  </div>
-                  <div class="home-reference-frame section-card">
-                    <img src="/assets/reference-ui.jpg" alt="Reference landing style">
+                  <div class="section-heading">
+                    <h2>Home Overview</h2>
+                    <p>Navigate through our core DBT modules below to learn, compare, check your status, watch videos, and visit resources.</p>
                   </div>
                   <div class="home-grid">
                     %s
@@ -176,20 +183,20 @@ public final class PageRenderer {
                   </div>
                 </section>
                 """.formatted(
-                homeCard(viewState, Section.LEARN, "learn", "Learn About DBT", "Understand Aadhaar and DBT benefits", "Read More"),
-                homeCard(viewState, Section.CHECK_ACCOUNT, "check", "Check Account Status", "Check DBT eligibility of your account", "Check Now"),
-                homeCard(viewState, Section.COMPARISON, "compare", "Comparison Phase", "Compare Aadhaar linked and DBT enabled accounts", "Compare Now"),
-                homeCard(viewState, Section.VIDEOS, "video", "Watch Awareness Video", "Watch video on Aadhaar and DBT", "Play Video"),
-                homeCard(viewState, Section.RESOURCES, "resources", "Resources", "Visit official Aadhaar and DBT sites", "Visit Links"),
-                homeCard(viewState, Section.QUIZ, "quiz", "Quiz and Awareness", "Test your understanding with five questions", "Start Quiz"),
-                homeCard(viewState, Section.AI_ASSISTANT, "ai", "AI Assistant", "Ask Aadhaar and DBT questions there itself", "Open Assistant"));
+                homeCard(viewState, Section.LEARN, "learn", "Learn About DBT", "Understand Aadhaar & DBT benefits", "Read More"),
+                homeCard(viewState, Section.COMPARISON, "compare", "Comparison", "Check linked vs seeded status", "View Comparison"),
+                homeCard(viewState, Section.CHECK_ACCOUNT, "check", "Check Account Status", "Verify DBT eligibility of your account", "Check Now"),
+                homeCard(viewState, Section.VIDEOS, "video", "Watch Awareness Video", "Official videos on Aadhaar & DBT", "Play Video"),
+                homeCard(viewState, Section.RESOURCES, "resources", "Resources", "Open official portals, FAQs, and helpful references", "Visit Links"),
+                homeCard(viewState, Section.QUIZ, "quiz", "Quiz And Awareness", "Take a five-question quiz and review the correct explanations", "Start Quiz"),
+                homeCard(viewState, Section.AI_ASSISTANT, "ai", "AI Assistant", "Open suggested Aadhaar DBT questions and ask your own", "Open Assistant"));
     }
 
     private String homeCard(ViewState viewState, Section section, String iconClass, String title, String description, String actionLabel) {
         return """
                 <article class="section-card home-card">
                   <div class="home-card-header">
-                    <div class="home-icon %s"></div>
+                    <div class="home-icon-shell %s">%s</div>
                     <div class="home-card-copy">
                       <h3>%s</h3>
                       <p>%s</p>
@@ -197,7 +204,7 @@ public final class PageRenderer {
                   </div>
                   <a class="home-card-button" href="%s">%s</a>
                 </article>
-                """.formatted(escape(iconClass), escape(title), escape(description), sectionHref(section), escape(actionLabel));
+                """.formatted(escape(iconClass), homeIconSvg(iconClass), escape(title), escape(description), sectionHref(section), escape(actionLabel));
     }
 
     private String renderLearnSection(ViewState viewState, AppContent content) {
@@ -215,6 +222,16 @@ public final class PageRenderer {
                     <h2>%s</h2>
                     <p>%s</p>
                   </div>
+                  <div class="section-card section-banner">
+                    <div class="section-banner-brand">
+                      <img src="/assets/aadhaar-logo.png" alt="Aadhaar logo">
+                      <div>
+                        <span class="pill-label">Aadhaar Learning Module</span>
+                        <h3>Learn The Full Aadhaar To DBT Readiness Story</h3>
+                      </div>
+                    </div>
+                    <p>This learning page is the foundation of the entire website. It explains how Aadhaar linking starts at the bank, why residents often confuse linking with DBT receipt, and what a person should understand before checking any official status result.</p>
+                  </div>
                   <div class="hero-grid">
                     <article class="section-card learn-hero-card">
                       <img src="/assets/learn-panel.png" alt="Aadhaar DBT awareness">
@@ -227,6 +244,7 @@ public final class PageRenderer {
                     </article>
                     <article class="section-card key-card">
                       <div class="key-title">What You Should Understand Here</div>
+                      <p class="support-copy">A resident usually begins by hearing that Aadhaar must be linked to a bank account. That message is only the first layer. In reality, the resident should understand identity linkage, bank-side recording, scheme eligibility, and the need to verify the current destination bank before expecting DBT credits.</p>
                       <ul class="key-list">%s</ul>
                       <div class="button-row">
                         <a class="primary-button" href="%s">Open Comparison Phase</a>
@@ -242,6 +260,7 @@ public final class PageRenderer {
                   <div class="knowledge-grid">
                     <article class="section-card feature-copy">
                       <h3>Detailed Learning Notes</h3>
+                      <p>The purpose of this page is not only to introduce Aadhaar and DBT, but to help the resident think in the correct order. First understand what the bank has recorded, then understand how the DBT path works, then verify the live result on the official portals.</p>
                       <ul class="steps-list">%s</ul>
                     </article>
                     <article class="section-card diagram-card">
@@ -254,6 +273,34 @@ public final class PageRenderer {
                         <div class="diagram-node accent-node">Official Status Must Still Be Checked</div>
                       </div>
                     </article>
+                  </div>
+                  <div class="knowledge-grid">
+                    <article class="section-card branded-info-card">
+                      <div class="section-banner-brand compact-brand">
+                        <img src="/assets/aadhaar-logo.png" alt="Aadhaar logo">
+                        <div>
+                          <h3>What Residents Usually Miss</h3>
+                          <p>People often remember the bank where they last submitted Aadhaar, but they do not always verify whether that same bank is the one currently aligned for Aadhaar-based benefits.</p>
+                        </div>
+                      </div>
+                      <div class="branded-points">
+                        <div class="diagram-node soft-node">Submitting Aadhaar at a branch is not the same as confirming current DBT destination status.</div>
+                        <div class="diagram-node">A bank can acknowledge Aadhaar linkage while the resident still needs an official status check.</div>
+                        <div class="diagram-node accent-node">The safest approach is to learn, compare, and then verify through official portals.</div>
+                      </div>
+                    </article>
+                    <article class="section-card learn-image-card">
+                      <img src="/assets/learn-panel.png" alt="Residents learning Aadhaar and DBT concepts">
+                      <div class="learn-image-caption">
+                        <h3>Visual Learning Support</h3>
+                        <p>The illustration reinforces the main learning idea: a resident should understand the relationship between Aadhaar, bank records, and DBT flow before assuming that benefit transfer is already active.</p>
+                      </div>
+                    </article>
+                  </div>
+                  <div class="insight-grid">
+                    <article class="section-card info-tile"><h3>Example: New Account Opened</h3><p>A resident opens a new account and submits Aadhaar there. The resident should still verify whether the newly preferred bank is the live bank reflected in the official Aadhaar-bank result.</p></article>
+                    <article class="section-card info-tile"><h3>Example: Old Bank Still Active</h3><p>A resident may remember using the latest bank, but an older bank path can still be relevant until the official update fully reflects the intended change.</p></article>
+                    <article class="section-card info-tile"><h3>Example: Scheme Confusion</h3><p>Some users assume every scheme uses the same delivery path. Learning the distinction helps residents ask the correct question before visiting a branch or portal.</p></article>
                   </div>
                   <aside class="note-panel">%s</aside>
                 </section>
@@ -278,6 +325,16 @@ public final class PageRenderer {
                   <div class="section-heading">
                     <h2>%s</h2>
                     <p>%s</p>
+                  </div>
+                  <div class="section-card section-banner comparison-banner">
+                    <div class="section-banner-brand">
+                      <img src="/assets/aadhaar-logo.png" alt="Aadhaar logo">
+                      <div>
+                        <span class="pill-label">Comparison Module</span>
+                        <h3>Aadhaar Linked Vs DBT Enabled Bank Accounts</h3>
+                      </div>
+                    </div>
+                    <p>This phase distinguishes the two ideas properly. Aadhaar linked answers whether the bank has associated Aadhaar with the account. DBT enabled is the stronger idea related to actual Aadhaar-based benefit routing readiness. A resident should never treat both phrases as identical.</p>
                   </div>
                   <div class="hero-grid comparison-grid">
                     <article class="section-card compare-card">
@@ -308,22 +365,65 @@ public final class PageRenderer {
                         <div class="compare-example"><strong>Example 1</strong><p>Ravi linked Aadhaar with Bank A years ago and later updated Bank B. Bank B may say Aadhaar is linked, but the active destination can still be Bank A until the official route changes.</p></div>
                         <div class="compare-example"><strong>Example 2</strong><p>Suma submitted Aadhaar at the branch and received acknowledgement. If routing readiness is still incomplete, her account may be linked without yet being the effective DBT destination.</p></div>
                       </div>
+                      <div class="compare-example-grid">
+                        <div class="compare-example"><strong>Example 3</strong><p>Imran checks his benefit expectation only through a branch conversation. The better method is to compare the official status result with the bank where he actually expects Aadhaar-based DBT to arrive.</p></div>
+                        <div class="compare-example"><strong>Example 4</strong><p>Lakshmi changed her bank recently. Her latest memory may be correct, but the official destination bank must still be confirmed before she assumes the new account is the active Aadhaar-based route.</p></div>
+                      </div>
                     </article>
-                    <article class="section-card feature-copy">
-                      <h3>Video and Diagram Difference</h3>
-                      <p>The comparison becomes clearer when the resident sees the stages visually. Use this embedded video and the diagram below together.</p>
+                    <article class="section-card feature-copy comparison-visual-card">
+                      <div class="section-banner-brand compact-brand">
+                        <img src="/assets/aadhaar-logo.png" alt="Aadhaar logo">
+                        <div>
+                          <h3>Visual Difference</h3>
+                          <p>The comparison becomes clearer when the resident sees the stages visually. Use this video, the diagrams, and the status-reading notes together.</p>
+                        </div>
+                      </div>
                       <div class="compare-video"><iframe src="https://www.youtube.com/embed/t2RfIMizWwc" title="Aadhaar linked versus DBT enabled" loading="lazy" allowfullscreen></iframe></div>
                       <div class="diagram-split">
                         <div class="diagram-panel"><span>Linked</span><div class="diagram-node">Aadhaar linked in bank record</div><div class="diagram-node soft-node">Association exists</div></div>
                         <div class="diagram-panel"><span>DBT Enabled</span><div class="diagram-node accent-node">Official route points to intended bank</div><div class="diagram-node">Benefit can reach the right destination</div></div>
                       </div>
+                      <div class="comparison-flow-card">
+                        <div class="comparison-mini-flow">
+                          <img src="/assets/aadhaar-logo.png" alt="Aadhaar logo">
+                          <div class="diagram-arrow">&rarr;</div>
+                          <div class="diagram-node">Bank Link Created</div>
+                          <div class="diagram-arrow">&rarr;</div>
+                          <div class="diagram-node accent-node">DBT Destination Confirmed</div>
+                        </div>
+                      </div>
                     </article>
+                  </div>
+                  <div class="insight-grid">
+                    <article class="section-card info-tile"><h3>What Linked Tells You</h3><p>It indicates that Aadhaar has been associated with a bank account record. This is useful, but it is still only part of the complete DBT picture.</p></article>
+                    <article class="section-card info-tile"><h3>What DBT Enabled Tells You</h3><p>It is closer to the actual payment destination logic, which is why residents should pay extra attention to the bank shown in the official result.</p></article>
+                    <article class="section-card info-tile"><h3>Why Comparison Matters</h3><p>Without this distinction, users may complain that they linked Aadhaar but did not receive DBT, when the real issue is the currently active destination path.</p></article>
                   </div>
                   <section class="info-block">
                     <h3>%s</h3>
                     <p>%s</p>
                     <div class="table-shell"><table class="comparison-table"><thead><tr><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr></thead><tbody>%s</tbody></table></div>
                   </section>
+                  <div class="knowledge-grid">
+                    <article class="section-card feature-copy">
+                      <h3>How To Read The Difference Properly</h3>
+                      <ul class="steps-list">
+                        <li>First ask whether Aadhaar is merely associated with the account at the bank level.</li>
+                        <li>Then ask whether the official resident-facing result points to the same bank for Aadhaar-based benefit routing.</li>
+                        <li>If the bank shown in the official result differs from your expected bank, do not assume the latest branch visit already finished the process.</li>
+                        <li>Use this comparison phase as the interpretation guide before opening the Check Account workflow.</li>
+                      </ul>
+                    </article>
+                    <article class="section-card branded-info-card">
+                      <div class="section-banner-brand compact-brand">
+                        <img src="/assets/learn-panel.png" alt="Aadhaar and DBT awareness illustration">
+                        <div>
+                          <h3>Why This Page Looks Detailed</h3>
+                          <p>This module is meant to remove the exact confusion that causes residents to mix up linkage with benefit-readiness. The extra examples and visuals are included so the distinction feels authentic and easy to remember.</p>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
                   <aside class="note-panel">%s</aside>
                 </section>
                 """.formatted(
@@ -438,30 +538,50 @@ public final class PageRenderer {
     }
 
     private String renderVideoSection(AppContent content) {
-        StringBuilder embeds = new StringBuilder();
+        List<VideoItem> embeddedVideos = new ArrayList<>();
         StringBuilder links = new StringBuilder();
         for (VideoItem video : content.videos()) {
             if (!video.embedId().isBlank()) {
-                embeds.append("""
-                        <article class="section-card embed-card">
-                          <div class="embed-frame"><iframe src="https://www.youtube.com/embed/%s" title="%s" loading="lazy" allowfullscreen></iframe></div>
-                          <div class="embed-meta"><span class="source-badge">%s</span><h3>%s</h3><p>%s</p></div>
-                        </article>
-                        """.formatted(escape(video.embedId()), escape(video.title()), escape(video.source()), escape(video.title()), escape(video.description())));
+                embeddedVideos.add(video);
             } else {
                 links.append(resourceCard(video.title(), video.description(), "Useful when the resident wants more related official video material or grouped tutorials.", video.source(), video.url(), "Open Video Page"));
+            }
+        }
+        VideoItem featuredVideo = embeddedVideos.isEmpty() ? null : embeddedVideos.get(0);
+        StringBuilder spotlightCards = new StringBuilder();
+        StringBuilder galleryCards = new StringBuilder();
+        for (int index = 1; index < embeddedVideos.size(); index++) {
+            VideoItem video = embeddedVideos.get(index);
+            String card = index <= 3 ? miniVideoCard(video) : videoGalleryCard(video);
+            if (index <= 3) {
+                spotlightCards.append(card);
+            } else {
+                galleryCards.append(card);
+            }
+        }
+        if (galleryCards.isEmpty() && featuredVideo != null) {
+            for (int index = 1; index < embeddedVideos.size(); index++) {
+                galleryCards.append(videoGalleryCard(embeddedVideos.get(index)));
             }
         }
         return """
                 <section class="main-section">
                   <div class="section-heading">
                     <h2>Watch Video</h2>
-                    <p>All embedded videos below can be played inside the site. Additional official video collections are listed underneath.</p>
+                    <p>Official Aadhaar awareness videos are embedded here so the user can watch them directly inside the website without leaving this page.</p>
+                  </div>
+                  %s
+                  <div class="video-collection-intro section-card">
+                    <div>
+                      <span class="pill-label">In-Website Video Library</span>
+                      <h3>More Official Aadhaar Awareness Videos</h3>
+                      <p>These videos continue the same learning flow with app guidance, Aadhaar service use cases, verification walkthroughs, and public-awareness explainers.</p>
+                    </div>
                   </div>
                   <div class="video-embed-grid">%s</div>
                   <div class="resource-grid">%s</div>
                 </section>
-                """.formatted(embeds, links);
+                """.formatted(featuredVideo == null ? "" : featuredVideoLayout(featuredVideo, spotlightCards.toString()), galleryCards, links);
     }
 
     private String renderResourcesSection(AppContent content) {
@@ -534,15 +654,22 @@ public final class PageRenderer {
                     <section class="main-section" id="quiz-panel">
                       <div class="section-card final-score-card">
                         <div class="quiz-complete-badge">Quiz Completed</div>
-                        <p class="final-score-subtitle">%s/%s questions completed</p>
-                        <h2 class="final-score-title">Your Score</h2>
-                        <div class="final-score-number">%s/%s</div>
+                        <p class="final-score-subtitle">%s/%s Questions Completed</p>
+                        <h2 class="final-score-title">Final Quiz Result</h2>
+                        <div class="quiz-result-metrics">
+                          <div class="final-metric"><span>Total Questions</span><strong>%s</strong></div>
+                          <div class="final-metric"><span>Correct Answers</span><strong>%s/%s</strong></div>
+                          <div class="final-metric highlight"><span>Your Score</span><strong>%s/%s</strong></div>
+                        </div>
                         <p class="final-score-subtitle strong">You got %s/%s correct.</p>
                         <p class="final-score-text">%s</p>
-                        <a class="primary-button" href="/?section=quiz&restartQuiz=1#quiz-panel" onclick="rememberScroll('quiz-panel')">Restart Quiz</a>
+                        <div class="quiz-actions centered-actions">
+                          <a class="primary-button" href="/?section=quiz&restartQuiz=1#quiz-panel" onclick="rememberScroll('quiz-panel')">Restart Quiz</a>
+                          <a class="ghost-button" href="/?section=quiz#quiz-panel" onclick="rememberScroll('quiz-panel')">Back</a>
+                        </div>
                       </div>
                     </section>
-                    """.formatted(quiz.total(), quiz.total(), quiz.score(), quiz.total(), quiz.score(), quiz.total(), escape(finalQuizSummary(quiz.score(), quiz.total())));
+                    """.formatted(quiz.total(), quiz.total(), quiz.total(), quiz.score(), quiz.total(), quiz.score(), quiz.total(), quiz.score(), quiz.total(), escape(finalQuizSummary(quiz.score(), quiz.total())));
         }
 
         StringBuilder feedbackOptions = new StringBuilder();
@@ -669,6 +796,65 @@ public final class PageRenderer {
         return "AI Assistant Answer";
     }
 
+    private String featuredVideoLayout(VideoItem featuredVideo, String spotlightCards) {
+        return """
+                <div class="video-stage-grid">
+                  <article class="section-card featured-video-card">
+                    <div class="featured-video-copy">
+                      <span class="pill-label">Featured Official Video</span>
+                      <h3>%s</h3>
+                      <p>%s</p>
+                      <div class="featured-video-meta">
+                        <span class="source-badge">%s</span>
+                        <a class="ghost-button" href="%s" target="_blank" rel="noreferrer">Open On YouTube</a>
+                      </div>
+                    </div>
+                    <div class="video-frame featured-frame"><iframe src="https://www.youtube.com/embed/%s" title="%s" loading="lazy" allowfullscreen></iframe></div>
+                  </article>
+                  <div class="video-spotlight-list">%s</div>
+                </div>
+                """.formatted(
+                escape(featuredVideo.title()),
+                escape(featuredVideo.description()),
+                escape(featuredVideo.source()),
+                escape(featuredVideo.url()),
+                escape(featuredVideo.embedId()),
+                escape(featuredVideo.title()),
+                spotlightCards);
+    }
+
+    private String miniVideoCard(VideoItem video) {
+        return """
+                <article class="section-card mini-video-card">
+                  <div class="mini-video-frame"><iframe src="https://www.youtube.com/embed/%s" title="%s" loading="lazy" allowfullscreen></iframe></div>
+                  <div class="embed-meta">
+                    <span class="source-badge">%s</span>
+                    <h3>%s</h3>
+                    <p>%s</p>
+                  </div>
+                </article>
+                """.formatted(
+                escape(video.embedId()),
+                escape(video.title()),
+                escape(video.source()),
+                escape(video.title()),
+                escape(video.description()));
+    }
+
+    private String videoGalleryCard(VideoItem video) {
+        return """
+                <article class="section-card embed-card">
+                  <div class="embed-frame"><iframe src="https://www.youtube.com/embed/%s" title="%s" loading="lazy" allowfullscreen></iframe></div>
+                  <div class="embed-meta"><span class="source-badge">%s</span><h3>%s</h3><p>%s</p></div>
+                </article>
+                """.formatted(
+                escape(video.embedId()),
+                escape(video.title()),
+                escape(video.source()),
+                escape(video.title()),
+                escape(video.description()));
+    }
+
     private String finalQuizSummary(int score, int total) {
         if (score == total) {
             return "Excellent. You answered all five questions correctly.";
@@ -677,6 +863,69 @@ public final class PageRenderer {
             return "Good understanding. Review the explanations once more and restart if you want a fresh set of questions.";
         }
         return "Review the explanations and try another random set. The restart button loads a new five-question quiz.";
+    }
+
+    private String navBadge(Section section) {
+        return switch (section) {
+            case HOME -> "H";
+            case LEARN -> "L";
+            case COMPARISON -> "CP";
+            case CHECK_ACCOUNT -> "C";
+            case VIDEOS -> "V";
+            case QUIZ -> "Q";
+            case RESOURCES, GOVERNMENT -> "R";
+            case AI_ASSISTANT -> "AI";
+        };
+    }
+
+    private String homeIconSvg(String iconClass) {
+        return switch (iconClass) {
+            case "learn" -> """
+                    <svg class="home-icon-svg" viewBox="0 0 64 64" aria-hidden="true">
+                      <circle cx="32" cy="24" r="12" fill="#ffc107"/>
+                      <rect x="26" y="38" width="12" height="12" rx="4" fill="#3078df"/>
+                    </svg>
+                    """;
+            case "check" -> """
+                    <svg class="home-icon-svg" viewBox="0 0 64 64" aria-hidden="true">
+                      <circle cx="32" cy="32" r="22" fill="#3078df" fill-opacity="0.1"/>
+                      <path d="M20 32l8 8 16-16" fill="none" stroke="#3078df" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    """;
+            case "compare" -> """
+                    <svg class="home-icon-svg" viewBox="0 0 64 64" aria-hidden="true">
+                      <rect x="14" y="16" width="36" height="32" rx="6" fill="#f44336" fill-opacity="0.1" stroke="#f44336" stroke-width="4"/>
+                      <path d="M22 28h20M22 36h12" stroke="#f44336" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                    """;
+            case "video" -> """
+                    <svg class="home-icon-svg" viewBox="0 0 64 64" aria-hidden="true">
+                      <circle cx="32" cy="32" r="22" fill="#3078df" fill-opacity="0.1"/>
+                      <path d="M26 22l18 10-18 10z" fill="#3078df"/>
+                    </svg>
+                    """;
+            case "resources" -> """
+                    <svg class="home-icon-svg" viewBox="0 0 64 64" aria-hidden="true">
+                      <path d="M32 12l20 10H12z" fill="#ffc107"/>
+                      <rect x="16" y="24" width="32" height="28" rx="2" fill="#3078df"/>
+                    </svg>
+                    """;
+            case "quiz" -> """
+                    <svg class="home-icon-svg" viewBox="0 0 64 64" aria-hidden="true">
+                      <circle cx="32" cy="24" r="14" fill="#ff9800"/>
+                      <path d="M32 38v4" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+                    </svg>
+                    """;
+            case "ai" -> """
+                    <svg class="home-icon-svg" viewBox="0 0 64 64" aria-hidden="true">
+                      <rect x="12" y="16" width="40" height="32" rx="10" fill="#3078df" fill-opacity="0.1" stroke="#3078df" stroke-width="4"/>
+                      <circle cx="24" cy="28" r="3" fill="#3078df"/>
+                      <circle cx="32" cy="28" r="3" fill="#3078df"/>
+                      <circle cx="40" cy="28" r="3" fill="#3078df"/>
+                    </svg>
+                    """;
+            default -> "";
+        };
     }
 
     private List<QuizQuestion> pickQuestions(List<QuizQuestion> allQuestions, long seed, int count) {
@@ -764,145 +1013,168 @@ public final class PageRenderer {
     private String styles() {
         return """
                 :root {
-                  --primary: #4f8ceb;
-                  --primary-dark: #2e67c7;
-                  --accent: #f4d06d;
+                  --primary: #3078df;
+                  --primary-dark: #245eb5;
+                  --accent: #ffca54;
                   --surface: #ffffff;
-                  --surface-soft: #f6f8fe;
-                  --border: #dbe4f3;
-                  --text: #24324d;
-                  --muted: #5d6c88;
-                  --success: #eefaf2;
-                  --success-text: #1f6b44;
-                  --warning: #fff8e8;
-                  --warning-text: #8b6412;
-                  --danger: #fff2f2;
-                  --danger-text: #922d2d;
-                  --shadow: 0 18px 40px rgba(90, 112, 156, 0.14);
+                  --surface-soft: #f7f9fc;
+                  --border: #e2e8f1;
+                  --text: #1a2333;
+                  --muted: #64748b;
+                  --success: #ecfdf5;
+                  --success-text: #065f46;
+                  --warning: #fffbeb;
+                  --warning-text: #92400e;
+                  --danger: #fef2f2;
+                  --danger-text: #b91c1c;
+                  --shadow: 0 18px 42px rgba(48, 83, 146, 0.12);
                 }
                 * { box-sizing: border-box; }
-                body { margin: 0; padding: 14px; background: linear-gradient(180deg, #f7f8fd 0%, #edf2fb 100%); color: var(--text); font-family: "Segoe UI", Arial, sans-serif; }
+                body { margin: 0; padding: 20px; background: linear-gradient(180deg, #f4f7fc 0%, #eef4fb 100%); color: var(--text); font-family: "Segoe UI", system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
                 a { color: inherit; text-decoration: none; }
-                .page-shell { max-width: 1460px; margin: 0 auto; background: var(--surface); border: 1px solid #d9e2f3; border-radius: 24px; overflow: hidden; box-shadow: var(--shadow); }
-                .window-bar { display: flex; gap: 10px; align-items: center; height: 46px; padding: 0 20px; border-bottom: 1px solid #e3e8f2; background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%); }
-                .window-dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
-                .window-dot.red { background: #ff655a; } .window-dot.amber { background: #ffca54; } .window-dot.green { background: #69d97d; }
-                .hero-shell { background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%); }
-                .brand-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 18px 24px 14px; }
-                .brand-lockup { display: flex; align-items: center; gap: 18px; }
-                .brand-logo { width: 120px; height: auto; }
-                h1 { margin: 0 0 6px; font-size: clamp(1.95rem, 2.5vw, 2.85rem); letter-spacing: -0.03em; }
-                .brand-row p, .section-heading p, .resource-card p, .feature-copy p, .note-panel p, .home-card-copy p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 0.98rem; }
-                .language-tools { display: grid; justify-items: end; }
-                .language-chip { display: inline-flex; align-items: center; gap: 12px; min-width: 190px; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--border); background: #fff; box-shadow: 0 10px 24px rgba(152, 171, 214, 0.12); }
-                .flag-badge { width: 28px; height: 28px; display: inline-grid; place-items: center; border-radius: 50%; background: #fff7e4; font-size: 0.85rem; font-weight: 700; }
-                .language-chip select { width: 100%; border: 0; background: transparent; color: var(--text); font-size: 0.95rem; outline: none; }
+                .page-shell { max-width: 1320px; margin: 0 auto; background: var(--surface); border: 1px solid #d9e2ef; border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
+                .window-bar { display: flex; gap: 8px; align-items: center; height: 40px; padding: 0 16px; background: #fff; border-bottom: 1px solid var(--border); }
+                .window-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.8; }
+                .window-dot.red { background: #ff5f57; } .window-dot.amber { background: #febc2e; } .window-dot.green { background: #28c840; }
+                .hero-shell { padding-bottom: 0; border-bottom: 1px solid var(--border); }
+                .brand-row { display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; }
+                .brand-lockup { display: flex; align-items: center; gap: 24px; }
+                .brand-logo { width: 90px; height: auto; }
+                h1 { margin: 0 0 4px; font-size: 2.25rem; font-weight: 800; color: #1e293b; letter-spacing: -0.02em; }
+                .brand-row p { margin: 0; color: var(--muted); font-size: 1.1rem; }
                 .google-translate-anchor { position: absolute; width: 0; height: 0; overflow: hidden; }
                 body > .skiptranslate, iframe.skiptranslate { display: none !important; }
                 body { top: 0 !important; }
-                .top-nav { display: flex; flex-wrap: wrap; gap: 0; padding: 0 18px; background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%); overflow: auto; }
-                .nav-link { display: inline-flex; align-items: center; justify-content: center; min-height: 68px; padding: 0 20px; color: rgba(255,255,255,0.96); font-size: 0.96rem; font-weight: 700; border-bottom: 4px solid transparent; white-space: nowrap; }
-                .nav-link.active { background: rgba(255,255,255,0.12); border-color: var(--accent); }
-                .content-wrap { padding: 18px 28px 28px; background: linear-gradient(180deg, #fbfcff 0%, #f5f8ff 100%); }
-                .phase-shell { margin-bottom: 24px; }
-                .phase-trail { margin-bottom: 12px; color: #4c5a76; font-size: 0.95rem; }
-                .phase-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-                .phase-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 18px; background: #f5f7fc; border: 1px solid #e1e7f3; color: #52607e; box-shadow: 0 10px 28px rgba(118,138,180,0.08); }
-                .phase-card.active { background: linear-gradient(90deg, var(--primary) 0%, #63a0ee 100%); color: #fff; border-color: #4e88e5; }
-                .phase-number { width: 34px; height: 34px; border-radius: 11px; display: inline-grid; place-items: center; background: rgba(255,255,255,0.18); font-size: 1.1rem; font-weight: 700; }
-                .phase-label { font-size: 0.95rem; font-weight: 700; } .phase-arrow { margin-left: auto; font-size: 1.5rem; }
-                .main-section { display: flex; flex-direction: column; gap: 24px; }
-                .section-heading h2, .section-card h3, .info-block h3 { margin: 0 0 10px; color: var(--text); letter-spacing: -0.02em; }
-                .section-heading h2 { font-size: clamp(1.85rem, 2.2vw, 2.45rem); }
-                .centered-heading { text-align: center; }
-                .section-card, .note-panel, .assessment-box { border: 1px solid var(--border); border-radius: 22px; background: var(--surface); box-shadow: 0 14px 35px rgba(148,167,202,0.09); }
+                .language-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 10px; border: 1px solid var(--border); background: #fff; cursor: pointer; }
+                .flag-badge { font-weight: 700; color: var(--muted); font-size: 0.85rem; }
+                .language-chip select { border: 0; background: transparent; font-size: 0.95rem; font-weight: 500; outline: none; cursor: pointer; color: var(--text); }
+                .top-nav { display: flex; background: var(--primary); padding: 0 24px; overflow-x: auto; scrollbar-width: none; }
+                .top-nav::-webkit-scrollbar { display: none; }
+                .nav-link { display: flex; align-items: center; gap: 10px; padding: 16px 20px; color: #fff; font-weight: 600; font-size: 0.95rem; white-space: nowrap; transition: all 0.2s; border-radius: 0; }
+                .nav-link.active { background: #eef5ff; color: var(--primary); border-top-left-radius: 8px; border-top-right-radius: 8px; }
+                .nav-badge { background: rgba(255, 255, 255, 0.2); color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; min-width: 24px; text-align: center; }
+                .nav-link.active .nav-badge { background: var(--primary); color: #fff; }
+                .content-wrap { padding: 40px 32px; background: #fff; }
+                .main-section { display: flex; flex-direction: column; gap: 28px; }
+                .section-heading { margin-bottom: 40px; }
+                .section-heading h2 { font-size: 2.5rem; font-weight: 800; margin: 0 0 12px; color: #1e293b; letter-spacing: -0.03em; }
+                .section-heading p { margin: 0; font-size: 1.15rem; color: var(--muted); max-width: 900px; line-height: 1.6; }
+                .section-card, .note-panel, .assessment-box { border: 1px solid var(--border); border-radius: 24px; background: var(--surface); box-shadow: 0 14px 32px rgba(84, 110, 160, 0.08); }
                 .solo-card { padding: 28px; }
-                .hero-grid, .split-grid, .knowledge-grid, .resource-summary, .video-feature { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
-                .comparison-grid { align-items: start; }
-                .insight-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-                .portal-process-grid, .resource-grid, .video-embed-grid { display: grid; gap: 18px; }
-                .portal-process-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-                .resource-grid, .video-embed-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-                .home-reference-frame { padding: 14px; max-width: 980px; margin: 0 auto; }
-                .home-reference-frame img { width: 100%; border-radius: 18px; display: block; }
-                .home-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-                .home-card { padding: 28px 30px; display: grid; gap: 24px; min-height: 220px; }
-                .home-card-header { display: flex; align-items: center; gap: 18px; }
-                .home-card-copy { display: grid; gap: 8px; }
-                .home-card-copy h3 { font-size: 1.08rem; margin: 0; }
-                .home-card-button { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 999px; background: #f5f7fd; color: var(--primary-dark); font-weight: 700; }
-                .home-icon { width: 78px; height: 78px; border-radius: 50%; flex: 0 0 auto; position: relative; background: linear-gradient(180deg, #ffd65a 0%, #f5b320 100%); }
-                .home-icon::after { position: absolute; inset: 0; display: grid; place-items: center; font-size: 0.98rem; font-weight: 800; color: #fff; }
-                .home-icon.learn::after { content: 'LE'; }
-                .home-icon.check { background: linear-gradient(180deg, #57a7ff 0%, #2d74d9 100%); }
-                .home-icon.check::after { content: 'CK'; }
-                .home-icon.compare { background: linear-gradient(180deg, #7c92ff 0%, #4a63dc 100%); }
-                .home-icon.compare::after { content: 'CP'; }
-                .home-icon.video { background: linear-gradient(180deg, #4aa6ff 0%, #1f74e2 100%); }
-                .home-icon.video::after { content: 'VD'; }
-                .home-icon.resources { background: linear-gradient(180deg, #ffd24f 0%, #eeac12 100%); }
-                .home-icon.resources::after { content: 'RS'; }
-                .home-icon.quiz { background: linear-gradient(180deg, #ff9d61 0%, #eb6c35 100%); }
-                .home-icon.quiz::after { content: 'QZ'; }
-                .home-icon.ai { background: linear-gradient(180deg, #95b0ff 0%, #5877e5 100%); }
-                .home-icon.ai::after { content: 'AI'; }
-                .learn-hero-card, .key-card, .form-card, .steps-card, .feature-copy, .portal-card, .resource-card, .quiz-card { padding: 22px; }
-                .learn-hero-card img { width: 100%; display: block; border-radius: 18px; margin-bottom: 18px; }
-                .learn-hero-copy { display: grid; gap: 14px; }
-                .pill-label { display: inline-flex; align-items: center; width: fit-content; padding: 5px 10px; border-radius: 999px; background: #edf4ff; color: var(--primary-dark); font-size: 0.78rem; font-weight: 700; }
-                .key-card { background: linear-gradient(180deg, #fff9ea 0%, #fff3d7 100%); }
-                .key-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 14px; }
-                .key-list, .steps-list, .detail-list { margin: 0; padding-left: 22px; display: grid; gap: 10px; line-height: 1.6; }
-                .info-tile { padding: 20px; }
-                .diagram-card { padding: 20px; }
+                .phase-shell { margin-bottom: 28px; }
+                .phase-trail { margin-bottom: 12px; color: var(--muted); font-weight: 600; }
+                .phase-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+                .phase-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 18px; border: 1px solid var(--border); background: #f8fbff; color: var(--muted); }
+                .phase-card.active { background: linear-gradient(90deg, var(--primary), var(--primary-dark)); color: #fff; border-color: transparent; }
+                .phase-number { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; background: rgba(48, 120, 223, 0.12); font-weight: 800; }
+                .phase-card.active .phase-number { background: rgba(255,255,255,0.18); }
+                .phase-label { font-weight: 800; }
+                .phase-arrow { margin-left: auto; font-size: 1.4rem; }
+                .hero-grid, .split-grid, .knowledge-grid, .resource-summary, .video-feature { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+                .insight-grid, .portal-process-grid, .resource-grid, .video-embed-grid { display: grid; gap: 20px; }
+                .insight-grid, .portal-process-grid, .resource-grid, .video-embed-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+                .home-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+                .home-card { padding: 32px; border-radius: 24px; border: 1px solid var(--border); background: #fff; display: flex; flex-direction: column; gap: 24px; transition: transform 0.2s, box-shadow 0.2s; position: relative; }
+                .home-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); }
+                .home-card-header { display: flex; align-items: flex-start; gap: 20px; }
+                .home-icon-shell { width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center; flex-shrink: 0; }
+                .home-icon-shell.learn { background: #fff8e1; }
+                .home-icon-shell.compare { background: #fff1f2; }
+                .home-icon-shell.check { background: #eff6ff; }
+                .home-icon-shell.video { background: #f0f9ff; }
+                .home-icon-shell.resources { background: #fff7ed; }
+                .home-icon-shell.quiz { background: #fdf2f8; }
+                .home-icon-shell.ai { background: #f5f3ff; }
+                .home-icon-svg { width: 32px; height: 32px; }
+                .home-card-copy { flex: 1; }
+                .home-card-copy h3 { margin: 0 0 6px; font-size: 1.25rem; font-weight: 700; color: #1e293b; }
+                .home-card-copy p { margin: 0; color: var(--muted); line-height: 1.5; font-size: 1rem; }
+                .home-card-button { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 12px; background: #f1f5f9; color: var(--primary); font-weight: 700; border-radius: 12px; font-size: 0.95rem; transition: background 0.2s; }
+                .home-card-button:hover { background: #e2e8f0; }
+                .section-banner { padding: 24px; display: grid; gap: 14px; background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%); }
+                .comparison-banner { background: linear-gradient(180deg, #fffdf6 0%, #f8fbff 100%); }
+                .section-banner-brand { display: flex; align-items: center; gap: 16px; }
+                .section-banner-brand img { width: 84px; max-width: 100%; height: auto; flex: 0 0 auto; object-fit: contain; }
+                .compact-brand { align-items: flex-start; }
+                .compact-brand img { width: 70px; border-radius: 16px; }
+                .section-banner p, .support-copy, .feature-copy p, .compare-example p, .resource-card p, .portal-card p, .note-panel, .learn-image-caption p { color: var(--muted); line-height: 1.65; }
+                .learn-hero-card, .key-card, .form-card, .steps-card, .feature-copy, .portal-card, .resource-card, .quiz-card, .compare-card, .diagram-card, .info-tile, .learn-image-card, .branded-info-card { padding: 24px; }
+                .learn-hero-card img, .learn-image-card img { width: 100%; height: auto; display: block; border-radius: 18px; object-fit: cover; }
+                .learn-hero-copy, .learn-image-caption, .branded-info-card, .branded-points, .compare-card, .comparison-visual-card, .embed-meta, .featured-video-copy { display: grid; gap: 14px; }
+                .pill-label, .source-badge, .quiz-progress, .quiz-complete-badge { display: inline-flex; align-items: center; width: fit-content; padding: 6px 11px; border-radius: 999px; background: #edf4ff; color: var(--primary-dark); font-size: 0.8rem; font-weight: 800; }
+                .key-card { background: linear-gradient(180deg, #fff9ea 0%, #fff4d8 100%); }
+                .key-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 14px; }
+                .key-list, .steps-list, .detail-list { margin: 0; padding-left: 22px; display: grid; gap: 10px; line-height: 1.65; }
                 .diagram-stack { display: grid; gap: 10px; margin-top: 16px; }
-                .diagram-node { padding: 14px 16px; border-radius: 16px; background: #f5f8ff; border: 1px solid #dbe4f3; text-align: center; font-weight: 700; }
-                .accent-node { background: #fff4d8; border-color: #f0d07b; }
+                .diagram-node { padding: 14px 16px; border-radius: 16px; background: #f5f8ff; border: 1px solid #dbe4f3; text-align: center; font-weight: 800; }
+                .accent-node { background: #fff4d8; border-color: #f1cf72; }
                 .soft-node { background: #eef4ff; }
-                .diagram-arrow { text-align: center; color: var(--primary-dark); font-size: 1.2rem; }
-                .compare-card { padding: 22px; display: grid; gap: 18px; background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%); }
+                .diagram-arrow { text-align: center; color: var(--primary-dark); font-size: 1.2rem; font-weight: 800; }
                 .compare-columns, .compare-example-grid, .diagram-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-                .compare-panel, .compare-example, .diagram-panel { padding: 16px; border-radius: 18px; border: 1px solid #dce5f6; background: #fff; }
+                .compare-panel, .compare-example, .diagram-panel, .comparison-flow-card { padding: 16px; border-radius: 18px; border: 1px solid #dce5f6; background: #fff; }
                 .linked-panel { background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%); }
                 .dbt-panel { background: linear-gradient(180deg, #fffaf0 0%, #fff0ce 100%); }
-                .compare-video, .video-frame, .embed-frame { overflow: hidden; border-radius: 18px; background: linear-gradient(135deg, #273552 0%, #4f8ceb 100%); }
-                .compare-video iframe, .video-frame iframe, .embed-frame iframe { width: 100%; min-height: 260px; height: 100%; border: 0; }
-                .compare-header p, .compare-example p, .resource-why, .portal-card p { color: var(--muted); }
-                .table-shell { overflow: hidden; border-radius: 18px; border: 1px solid var(--border); background: #fff; box-shadow: 0 14px 32px rgba(142,160,198,0.12); }
-                table { width: 100%; border-collapse: collapse; } thead { background: #eaf2ff; } th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid #e6ebf7; line-height: 1.6; }
-                .note-panel { padding: 18px 20px; background: linear-gradient(180deg, #fff9e7 0%, #fff3d1 100%); color: #7e5d10; }
-                .source-badge { display: inline-flex; align-items: center; justify-content: center; width: fit-content; padding: 8px 12px; border-radius: 999px; background: #edf4ff; color: var(--primary-dark); font-size: 0.84rem; font-weight: 700; }
-                .portal-card, .resource-card, .embed-card { display: grid; gap: 14px; }
-                .resource-actions { display: flex; margin-top: auto; }
+                .comparison-mini-flow { display: grid; grid-template-columns: 70px 28px 1fr 28px 1fr; align-items: center; gap: 10px; }
+                .comparison-mini-flow img { width: 60px; height: auto; display: block; margin: 0 auto; }
+                .compare-video, .video-frame, .embed-frame, .mini-video-frame { overflow: hidden; border-radius: 18px; background: linear-gradient(135deg, #26334d 0%, #3078df 100%); }
+                .compare-video iframe, .video-frame iframe, .embed-frame iframe, .mini-video-frame iframe { width: 100%; min-height: 260px; height: 100%; border: 0; display: block; }
+                .table-shell { overflow: auto; border-radius: 18px; border: 1px solid var(--border); background: #fff; box-shadow: 0 14px 32px rgba(142,160,198,0.12); }
+                table { width: 100%; border-collapse: collapse; }
+                thead { background: #eaf2ff; }
+                th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid #e6ebf7; line-height: 1.6; }
+                .note-panel { padding: 20px 22px; background: linear-gradient(180deg, #fff9e7 0%, #fff3d1 100%); color: #7e5d10; }
+                .button-row, .site-link-group, .quiz-actions, .featured-video-meta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+                .primary-button, .ghost-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 18px; border-radius: 12px; border: 0; cursor: pointer; font-size: 0.92rem; font-weight: 800; }
+                .primary-button { background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; box-shadow: 0 14px 30px rgba(48,120,223,0.22); }
+                .ghost-button { background: #eef3fe; color: var(--primary-dark); }
                 .check-grid, .quiz-options { display: grid; gap: 12px; margin-bottom: 18px; }
-                .check-option, .quiz-option { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--surface-soft); border: 1px solid #e3e9f6; }
+                .check-option, .quiz-option { display: flex; align-items: flex-start; gap: 12px; padding: 13px 15px; border-radius: 14px; background: var(--surface-soft); border: 1px solid #e3e9f6; }
                 input[type="checkbox"], input[type="radio"] { margin-top: 5px; accent-color: var(--primary-dark); }
                 .aadhaar-lookup { display: grid; gap: 10px; margin-bottom: 18px; padding: 16px; border-radius: 16px; border: 1px solid #dde6f6; background: linear-gradient(180deg, #fbfcff 0%, #f4f7fd 100%); }
-                .field-label { font-size: 0.85rem; font-weight: 700; color: #53627f; }
+                .field-label { font-size: 0.85rem; font-weight: 800; color: #53627f; }
                 .aadhaar-input, .ai-textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid #cfdbf0; background: #fff; color: var(--text); font: inherit; }
                 .ai-textarea { min-height: 160px; resize: vertical; }
-                .button-row, .site-link-group, .quiz-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-                .primary-button, .ghost-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 18px; border-radius: 12px; border: 0; cursor: pointer; font-size: 0.92rem; font-weight: 700; }
-                .primary-button { background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; box-shadow: 0 14px 30px rgba(65,113,214,0.24); }
-                .ghost-button { background: #eef3fe; color: var(--primary-dark); }
                 .assessment-box { margin-top: 18px; padding: 18px 20px; }
                 .assessment-box.success { background: var(--success); color: var(--success-text); }
                 .assessment-box.warning { background: var(--warning); color: var(--warning-text); }
                 .assessment-box.danger { background: var(--danger); color: var(--danger-text); }
-                .quiz-progress { display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 999px; background: #edf4ff; color: var(--primary-dark); font-size: 0.84rem; font-weight: 700; margin-bottom: 14px; }
                 .correct-option { border-color: #83d1a4; background: #eefaf2; }
                 .wrong-option { border-color: #f1a7a7; background: #fff1f1; }
-                .final-score-card { text-align: center; max-width: 780px; margin: 0 auto; padding: 28px; }
-                .quiz-complete-badge { display: inline-flex; align-self: center; justify-self: center; padding: 8px 14px; border-radius: 999px; background: #edf4ff; color: var(--primary-dark); font-size: 0.84rem; font-weight: 700; }
+                .resource-card, .embed-card, .portal-card { display: grid; gap: 14px; }
+                .resource-actions { display: flex; margin-top: auto; }
+                .resource-why { color: var(--muted); }
+                .video-stage-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.95fr); gap: 22px; }
+                .featured-video-card, .mini-video-card, .video-collection-intro { padding: 22px; display: grid; gap: 16px; }
+                .featured-frame iframe { min-height: 360px; }
+                .video-spotlight-list { display: grid; gap: 16px; }
+                .mini-video-frame iframe { min-height: 164px; }
+                .final-score-card { text-align: center; max-width: 860px; margin: 0 auto; padding: 34px; display: grid; gap: 16px; background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%); }
                 .final-score-title { margin: 0; font-size: 1.8rem; }
                 .final-score-subtitle { margin: 0; font-size: 1rem; color: var(--muted); line-height: 1.6; }
-                .final-score-subtitle.strong { font-size: 1.08rem; font-weight: 700; color: var(--text); }
-                .final-score-number { font-size: clamp(3rem, 6vw, 4.8rem); font-weight: 800; line-height: 1; letter-spacing: -0.05em; color: var(--primary-dark); }
-                .final-score-text { margin: 0; font-size: 1.02rem; color: var(--muted); line-height: 1.65; }
+                .final-score-subtitle.strong { font-size: 1.08rem; font-weight: 800; color: var(--text); }
+                .final-score-text { margin: 0; color: var(--muted); line-height: 1.65; }
+                .quiz-result-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+                .final-metric { display: grid; gap: 8px; padding: 18px; border-radius: 18px; background: #f5f8ff; border: 1px solid #dce6f7; }
+                .final-metric span { color: var(--muted); font-size: 0.92rem; }
+                .final-metric strong { font-size: 1.5rem; color: var(--text); }
+                .final-metric.highlight { background: linear-gradient(180deg, #edf4ff 0%, #dfeaff 100%); border-color: #cbdcf8; }
+                .centered-actions { justify-content: center; }
                 .faq-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
-                .page-footer { margin-top: 26px; font-size: 0.88rem; color: var(--muted); }
-                @media (max-width: 1120px) { .hero-grid, .split-grid, .knowledge-grid, .resource-summary, .video-feature, .portal-process-grid, .resource-grid, .video-embed-grid, .insight-grid, .home-grid, .compare-columns, .compare-example-grid, .diagram-split, .phase-steps { grid-template-columns: 1fr; } .faq-list { grid-template-columns: 1fr; } }
-                @media (max-width: 780px) { body { padding: 8px; } .brand-row, .content-wrap { padding-inline: 18px; } .brand-row { flex-direction: column; align-items: stretch; } .brand-lockup { flex-direction: column; align-items: flex-start; } .nav-link { min-height: 58px; padding: 0 14px; } .home-card-header { align-items: flex-start; } .home-icon { width: 64px; height: 64px; } }
+                .page-footer { text-align: center; margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; }
+                @media (max-width: 1120px) {
+                  .hero-grid, .split-grid, .knowledge-grid, .resource-summary, .video-feature, .portal-process-grid, .resource-grid, .video-embed-grid, .insight-grid, .home-grid, .compare-columns, .compare-example-grid, .diagram-split, .phase-steps, .video-stage-grid, .quiz-result-metrics, .comparison-mini-flow { grid-template-columns: 1fr; }
+                  .faq-list { grid-template-columns: 1fr; }
+                }
+                @media (max-width: 768px) {
+                  body { padding: 8px; }
+                  h1 { font-size: 1.75rem; }
+                  .brand-row { flex-direction: column; align-items: flex-start; gap: 20px; padding: 22px 20px; }
+                  .brand-lockup { flex-direction: column; align-items: flex-start; gap: 12px; }
+                  .content-wrap { padding: 30px 20px; }
+                  .section-heading h2 { font-size: 2rem; }
+                  .home-card-header, .section-banner-brand { align-items: flex-start; }
+                  .featured-frame iframe { min-height: 240px; }
+                }
                 """;
     }
 }
