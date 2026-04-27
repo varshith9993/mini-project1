@@ -664,7 +664,7 @@ public final class PageRenderer {
               <p class="final-score-text">%s</p>
               <div class="quiz-actions centered-actions">
                 <a class="primary-button" href="/?section=quiz&restartQuiz=1#quiz-panel" onclick="rememberScroll('quiz-panel')">Restart Quiz</a>
-                <a class="ghost-button" href="/?section=quiz#quiz-panel" onclick="rememberScroll('quiz-panel')">Back</a>
+                <a class="ghost-button" href="/?section=quiz&resetQuiz=1#quiz-panel" onclick="rememberScroll('quiz-panel')">Back</a>
               </div>
             </div>
           </section>
@@ -677,9 +677,9 @@ public final class PageRenderer {
     for (int index = 0; index < question.options().size(); index++) {
       String css = "quiz-option";
       if (index == question.correctIndex()) {
-        css += " correct-option";
+        css += " correct-option-reveal";
       } else if (index == quiz.selectedIndex()) {
-        css += " wrong-option";
+        css += " wrong-option-reveal";
       }
       feedbackOptions.append("<div class=\"").append(css).append("\"><span>")
           .append(escape(question.options().get(index))).append("</span></div>");
@@ -691,7 +691,10 @@ public final class PageRenderer {
             <div class="quiz-progress">Question %s of %s</div>
             <h3>%s</h3>
             <div class="quiz-options">%s</div>
-            <div class="assessment-box %s quiz-feedback-box"><h3>%s</h3><p>%s</p></div>
+            <div class="quiz-feedback-container %s">
+              <div class="feedback-badge"><h3>%s</h3></div>
+              <p>%s</p>
+            </div>
             <div class="quiz-actions"><a class="primary-button" href="/?section=quiz&quizSeed=%s&quizStep=%s&quizScore=%s#quiz-panel" onclick="rememberScroll('quiz-panel')">Next Question</a></div>
           </div>
         </section>
@@ -701,7 +704,7 @@ public final class PageRenderer {
             quiz.total(),
             escape(question.prompt()),
             feedbackOptions,
-            quiz.selectedIndex() == question.correctIndex() ? "success" : "warning",
+            quiz.selectedIndex() == question.correctIndex() ? "is-correct" : "is-wrong",
             quiz.selectedIndex() == question.correctIndex() ? "Correct Answer" : "Not Correct",
             escape(quiz.explanation()),
             quiz.seed(),
@@ -1161,7 +1164,29 @@ public final class PageRenderer {
         .primary-button { background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; box-shadow: 0 14px 30px rgba(48,120,223,0.22); }
         .ghost-button { background: #eef3fe; color: var(--primary-dark); }
         .check-grid, .quiz-options { display: grid; gap: 12px; margin-bottom: 18px; }
-        .check-option, .quiz-option { display: flex; align-items: flex-start; gap: 12px; padding: 13px 15px; border-radius: 14px; background: var(--surface-soft); border: 1px solid #e3e9f6; }
+        .check-option { display: flex; align-items: flex-start; gap: 12px; padding: 13px 15px; border-radius: 14px; background: var(--surface-soft); border: 1px solid #e3e9f6; }
+        .quiz-option { display: flex; align-items: center; gap: 14px; padding: 18px 22px; border-radius: 18px; border: 1.5px solid var(--border); background: #fff; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 500; }
+        .quiz-option:hover { border-color: var(--primary); background: #f8fbff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(48, 120, 223, 0.08); }
+        
+        .correct-option-reveal { border-color: #10b981 !important; background: #ecfdf5 !important; color: #065f46 !important; font-weight: 700; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
+        .wrong-option-reveal { border-color: #ef4444 !important; background: #fef2f2 !important; color: #991b1b !important; font-weight: 700; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1); }
+        
+        .quiz-feedback-container { margin-top: 28px; padding: 24px; border-radius: 24px; animation: slideInUp 0.4s ease-out; }
+        .quiz-feedback-container.is-correct { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #bbf7d0; }
+        .quiz-feedback-container.is-wrong { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid #fde68a; }
+        
+        .feedback-badge { margin-bottom: 12px; }
+        .feedback-badge h3 { margin: 0; font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .is-correct .feedback-badge h3 { color: #15803d; }
+        .is-wrong .feedback-badge h3 { color: #b45309; }
+        
+        .quiz-feedback-container p { margin: 0; font-size: 1.05rem; line-height: 1.6; color: #374151; font-weight: 500; }
+        
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
         input[type="checkbox"], input[type="radio"] { margin-top: 5px; accent-color: var(--primary-dark); }
         .aadhaar-lookup { display: grid; gap: 10px; margin-bottom: 18px; padding: 16px; border-radius: 16px; border: 1px solid #dde6f6; background: linear-gradient(180deg, #fbfcff 0%, #f4f7fd 100%); }
         .field-label { font-size: 0.85rem; font-weight: 800; color: #53627f; }

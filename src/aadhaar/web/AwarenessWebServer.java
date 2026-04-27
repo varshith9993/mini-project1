@@ -243,7 +243,11 @@ public final class AwarenessWebServer {
             List<QuizQuestion> allQuestions) {
         String startQuiz = first(params, "startQuiz");
         String restartQuiz = first(params, "restartQuiz");
-        if ("1".equals(startQuiz) || "1".equals(restartQuiz)) {
+        String resetQuiz = first(params, "resetQuiz");
+        if ("1".equals(startQuiz) || "1".equals(restartQuiz) || "1".equals(resetQuiz)) {
+            if ("1".equals(resetQuiz)) {
+                return new QuizAssessment(0L, -1, 0, 5, -1, false, false, "");
+            }
             return new QuizAssessment(System.currentTimeMillis(), 0, 0, 5, -1, false, false, "");
         }
 
