@@ -20,7 +20,11 @@ public final class AadhaarDbtAwarenessApp {
 
         AwarenessWebServer server = new AwarenessWebServer(new AwarenessService(), locateAssetsDirectory(), port, openBrowser);
         server.start();
+        
         System.out.println("Aadhaar DBT Awareness System is running at " + server.baseUrl());
+        System.out.flush();
+
+        Thread.currentThread().join();
     }
 
     private static Path locateAssetsDirectory() {

@@ -110,7 +110,7 @@ public final class AwarenessWebServer {
         server.setExecutor(Executors.newCachedThreadPool());
         server.start();
         if (openBrowser) {
-            openDefaultBrowser();
+            new Thread(this::openDefaultBrowser, "browser-opener").start();
         }
     }
 
