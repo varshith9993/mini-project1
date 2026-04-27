@@ -317,71 +317,74 @@ public final class PageRenderer {
             <h2>%s</h2>
             <p>%s</p>
           </div>
-          <div class="section-card section-banner comparison-banner">
+          <div class="section-banner comparison-banner">
             <div class="section-banner-brand">
-              <img src="/assets/aadhaar-logo.png" alt="Aadhaar logo">
+              <img src="/comparison_hero_banner_1777303789293.png" alt="Aadhaar and DBT Synchronization Illustration" style="width: 140px; border-radius: 20px;">
               <div>
-                <span class="pill-label">Comparison Module</span>
-                <h3>Aadhaar Linked Vs DBT Enabled Bank Accounts</h3>
+                <h2>Aadhaar Linking vs DBT Mapping</h2>
+                <p>A comprehensive deep-dive into why bank-side linkage is not the same as being "DBT Ready". Understanding this distinction is the key to solving 90% of benefit-related issues.</p>
               </div>
             </div>
-            <p>This phase distinguishes the two ideas properly. Aadhaar linked answers whether the bank has associated Aadhaar with the account. DBT enabled is the stronger idea related to actual Aadhaar-based benefit routing readiness. A resident should never treat both phrases as identical.</p>
           </div>
           <div class="hero-grid comparison-grid">
             <article class="section-card compare-card">
               <div class="compare-header">
-                <span class="pill-label">Comparison Phase</span>
-                <h3>What Exactly Is Different?</h3>
-                <p>Aadhaar linked and DBT enabled are related, but they answer different questions. One confirms a bank-side Aadhaar association. The other is closer to actual Aadhaar-based benefit routing readiness.</p>
+                <span class="pill-label">Technical Distinction</span>
+                <h3>The "Branch Link" vs The "Central Mapper"</h3>
+                <p>When you visit a branch, they link Aadhaar to your local account. However, for Government benefits, your Aadhaar must be "Mapped" in a central system (NPCI Mapper) to point to that specific bank.</p>
               </div>
               <div class="compare-columns">
                 <div class="compare-panel linked-panel">
-                  <h4>Aadhaar Linked</h4>
+                  <h4>Aadhaar Linked (Local)</h4>
                   <ul class="key-list">
-                    <li>The bank has recorded Aadhaar with the account.</li>
-                    <li>This does not automatically prove that DBT will arrive there.</li>
-                    <li>Multiple banks may show linkage over time if the resident updated details more than once.</li>
+                    <li><strong>Status:</strong> Associated with a specific bank account.</li>
+                    <li><strong>Scope:</strong> Used for KYC and local bank operations.</li>
+                    <li><strong>Action:</strong> Done at the bank branch or mobile app.</li>
+                    <li><strong>Result:</strong> "Aadhaar is linked with your account."</li>
                   </ul>
                 </div>
                 <div class="compare-panel dbt-panel">
-                  <h4>DBT Enabled</h4>
+                  <h4>DBT Enabled (Central)</h4>
                   <ul class="key-list">
-                    <li>The account is aligned with the active Aadhaar-based payment route.</li>
-                    <li>This status is closer to the actual destination used for benefits.</li>
-                    <li>Residents should verify this especially after changing banks.</li>
+                    <li><strong>Status:</strong> Active in the NPCI central routing hub.</li>
+                    <li><strong>Scope:</strong> Used by all Govt departments to send funds.</li>
+                    <li><strong>Action:</strong> Requires NPCI Mapper Seeding request.</li>
+                    <li><strong>Result:</strong> "Aadhaar is Mapped for DBT."</li>
                   </ul>
                 </div>
               </div>
               <div class="compare-example-grid">
-                <div class="compare-example"><strong>Example 1</strong><p>Ravi linked Aadhaar with Bank A years ago and later updated Bank B. Bank B may say Aadhaar is linked, but the active destination can still be Bank A until the official route changes.</p></div>
-                <div class="compare-example"><strong>Example 2</strong><p>Suma submitted Aadhaar at the branch and received acknowledgement. If routing readiness is still incomplete, her account may be linked without yet being the effective DBT destination.</p></div>
-              </div>
-              <div class="compare-example-grid">
-                <div class="compare-example"><strong>Example 3</strong><p>Imran checks his benefit expectation only through a branch conversation. The better method is to compare the official status result with the bank where he actually expects Aadhaar-based DBT to arrive.</p></div>
-                <div class="compare-example"><strong>Example 4</strong><p>Lakshmi changed her bank recently. Her latest memory may be correct, but the official destination bank must still be confirmed before she assumes the new account is the active Aadhaar-based route.</p></div>
+                <div class="compare-example">
+                  <strong>The "Old Account" Trap</strong>
+                  <p>Ravi has accounts in Bank A (Old) and Bank B (New). He linked Aadhaar to Bank B yesterday. However, the Central Mapper still points to Bank A. His next subsidy will still go to Bank A until Bank B successfully updates the Central Mapper.</p>
+                </div>
+                <div class="compare-example">
+                  <strong>The "KYC Only" Mistake</strong>
+                  <p>Suma gave her Aadhaar for KYC to open an account. While the account is "Linked", she didn't specifically sign the "DBT Consent Form". Her account remains unmapped for benefits despite being fully KYC compliant.</p>
+                </div>
               </div>
             </article>
+
             <article class="section-card feature-copy comparison-visual-card">
               <div class="section-banner-brand compact-brand">
-                <img src="/assets/aadhaar-logo.png" alt="Aadhaar logo">
+                <img src="/dbt_flow_logic_1777303859813.png" alt="DBT Flow Illustration" style="width: 80px;">
                 <div>
-                  <h3>Visual Difference</h3>
-                  <p>The comparison becomes clearer when the resident sees the stages visually. Use this video, the diagrams, and the status-reading notes together.</p>
+                  <h3>How Funds Find You</h3>
+                  <p>The Government doesn't need your bank account number. They only need your Aadhaar. The 'Mapper' decides where that money actually lands.</p>
                 </div>
               </div>
               <div class="compare-video"><iframe src="https://www.youtube.com/embed/t2RfIMizWwc" title="Aadhaar linked versus DBT enabled" loading="lazy" allowfullscreen></iframe></div>
-              <div class="diagram-split">
-                <div class="diagram-panel"><span>Linked</span><div class="diagram-node">Aadhaar linked in bank record</div><div class="diagram-node soft-node">Association exists</div></div>
-                <div class="diagram-panel"><span>DBT Enabled</span><div class="diagram-node accent-node">Official route points to intended bank</div><div class="diagram-node">Benefit can reach the right destination</div></div>
-              </div>
               <div class="comparison-flow-card">
                 <div class="comparison-mini-flow">
-                  <img src="/assets/aadhaar-logo.png" alt="Aadhaar logo">
+                  <div class="diagram-node">Govt Treasury</div>
                   <div class="diagram-arrow">&rarr;</div>
-                  <div class="diagram-node">Bank Link Created</div>
+                  <div class="diagram-node accent-node">NPCI Mapper (The Switch)</div>
                   <div class="diagram-arrow">&rarr;</div>
-                  <div class="diagram-node accent-node">DBT Destination Confirmed</div>
+                  <div class="diagram-node success-node">Your Bank</div>
                 </div>
+              </div>
+              <div class="note-panel" style="margin-top: 10px; font-size: 0.9rem;">
+                <strong>Pro Tip:</strong> Always look for the "Bank Name" in your official status. If it's not your current bank, your money is going elsewhere.
               </div>
             </article>
           </div>
@@ -391,19 +394,27 @@ public final class PageRenderer {
             <article class="section-card info-tile"><h3>Why Comparison Matters</h3><p>Without this distinction, users may complain that they linked Aadhaar but did not receive DBT, when the real issue is the currently active destination path.</p></article>
           </div>
           <section class="info-block">
-            <h3>%s</h3>
-            <p>%s</p>
+            <div class="section-heading">
+              <h3>%s</h3>
+              <p>%s</p>
+            </div>
             <div class="table-shell"><table class="comparison-table"><thead><tr><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr></thead><tbody>%s</tbody></table></div>
           </section>
           <div class="knowledge-grid">
             <article class="section-card feature-copy">
-              <h3>How To Read The Difference Properly</h3>
+              <h3>Step-by-Step Interpretation</h3>
               <ul class="steps-list">
-                <li>First ask whether Aadhaar is merely associated with the account at the bank level.</li>
-                <li>Then ask whether the official resident-facing result points to the same bank for Aadhaar-based benefit routing.</li>
-                <li>If the bank shown in the official result differs from your expected bank, do not assume the latest branch visit already finished the process.</li>
-                <li>Use this comparison phase as the interpretation guide before opening the Check Account workflow.</li>
+                <li><strong>Step 1:</strong> Identify where you WANT the money (e.g., Bank B).</li>
+                <li><strong>Step 2:</strong> Check the "Bank Mapper Status" online.</li>
+                <li><strong>Step 3:</strong> If it shows Bank A, visit Bank B and ask for "NPCI Mapping Update", not just "Linking".</li>
+                <li><strong>Step 4:</strong> Re-verify after 10 days to ensure the mapping has shifted to Bank B.</li>
               </ul>
+            </article>
+            <article class="section-card branded-info-card" style="background: linear-gradient(135deg, #3078df 0%, #1e40af 100%); color: #fff;">
+              <div style="padding: 20px;">
+                <h3 style="color: #fff;">Why This Matters To You</h3>
+                <p style="color: rgba(255,255,255,0.9);">Thousands of residents lose time visiting branches because they don't know that 'Linking' is a local bank action while 'Mapping' is a national routing action. This page gives you the technical edge to ask the right questions at the bank.</p>
+              </div>
             </article>
 
           </div>
