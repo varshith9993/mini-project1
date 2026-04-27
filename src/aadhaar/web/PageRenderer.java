@@ -206,70 +206,133 @@ public final class PageRenderer {
             <h2>%s</h2>
             <p>%s</p>
           </div>
+
           <div class="section-card section-banner">
             <div class="section-banner-brand">
               <img src="/assets/aadhaar-logo.png" alt="Aadhaar logo">
               <div>
-                <span class="pill-label">Aadhaar Learning Module</span>
-                <h3>Learn The Full Aadhaar To DBT Readiness Story</h3>
+                <span class="pill-label">Official Awareness Portal</span>
+                <h3>The Comprehensive Guide to Aadhaar-DBT Readiness</h3>
               </div>
             </div>
-            <p>This learning page is the foundation of the entire website. It explains how Aadhaar linking starts at the bank, why residents often confuse linking with DBT receipt, and what a person should understand before checking any official status result.</p>
+            <p>This module serves as the primary educational resource for residents to understand the intersection of digital identity and financial benefit delivery. In the Direct Benefit Transfer (DBT) ecosystem, Aadhaar acts as the universal financial address, ensuring that government subsidies reach the intended recipient without intermediary leakage.</p>
           </div>
+
           <div class="hero-grid">
             <article class="section-card learn-hero-card">
               <img src="/assets/learn-panel.png" alt="Aadhaar DBT awareness">
               <div class="learn-hero-copy">
-                <span class="pill-label">Foundation</span>
-                <h3>Understand Aadhaar Linking Before You Check Status</h3>
-                <p>This module focuses on the concept only. It explains what Aadhaar linking means, why it matters for service delivery, and why it should not be confused with the final DBT destination account.</p>
+                <span class="pill-label">The Foundation</span>
+                <h3>Linking vs. Mapping: The Core Concept</h3>
+                <p>To receive DBT, a resident must navigate two distinct technical phases. First, <strong>Linking</strong>, which is a bank-side KYC process. Second, <strong>Mapping</strong>, which is a national-level registration on the NPCI Mapper. This module explains why the second step is critical for benefit receipt.</p>
                 <ul class="detail-list">%s</ul>
               </div>
             </article>
             <article class="section-card key-card">
-              <div class="key-title">What You Should Understand Here</div>
-              <p class="support-copy">A resident usually begins by hearing that Aadhaar must be linked to a bank account. That message is only the first layer. In reality, the resident should understand identity linkage, bank-side recording, scheme eligibility, and the need to verify the current destination bank before expecting DBT credits.</p>
-              <ul class="key-list">%s</ul>
-              <div class="button-row">
-                <a class="primary-button" href="%s">Open Comparison Phase</a>
-                <a class="ghost-button" href="%s">Open Check Account</a>
+              <div class="key-title">Official Governance & Policy</div>
+              <p class="support-copy">The DBT framework is governed by the <strong>Aadhaar Act, 2016</strong> and subsequent amendments. It relies on the robust infrastructure provided by the Unique Identification Authority of India (UIDAI) and the National Payments Corporation of India (NPCI).</p>
+              <ul class="key-list">
+                <li><strong>UIDAI:</strong> Responsible for identity verification and biometric authentication.</li>
+                <li><strong>NPCI:</strong> Operates the Aadhaar Payment Bridge (APB) for national fund routing.</li>
+                <li><strong>RBI Guidelines:</strong> Mandates explicit resident consent for DBT mapping.</li>
+                <li><strong>Department of Expenditure:</strong> Oversees the overall DBT policy implementation.</li>
+              </ul>
+
+              <div class="key-title" style="font-size: 1.15rem; margin-top: 24px;">Compliance & Monitoring</div>
+              <p class="support-copy">The Government of India maintains a real-time monitoring system to track the success of every DBT transaction. Banks are required to report 'Success' or 'Failure' status back to the initiating department within 24-48 hours. If a transaction fails due to 'Aadhaar Not Mapped' or 'Account Dormancy', the system automatically flags the record for correction at the resident level.</p>
+
+              <div class="key-title" style="font-size: 1.15rem; margin-top: 16px;">Grievance Redressal</div>
+              <p class="support-copy">Residents have the statutory right to seek clarification on failed payments. You can approach your bank's branch manager or use the official <strong>CPGRAMS</strong> portal to lodge grievances related to Aadhaar-based payments. Most issues are resolved by simply providing a fresh 'DBT Consent Form' to your preferred bank.</p>
+
+              <div class="button-row" style="margin-top: 24px;">
+                <a class="primary-button" href="%s">Comparison Technicals</a>
+                <a class="ghost-button" href="%s">Verify Your Status</a>
               </div>
             </article>
           </div>
-          <div class="insight-grid">
-            <article class="section-card info-tile"><h3>Why Linking Matters</h3><p>It creates the bank-side identity relationship that many residents assume is the final step, even though routing readiness may still need separate confirmation.</p></article>
-            <article class="section-card info-tile"><h3>Why Confusion Happens</h3><p>Citizens often share Aadhaar with more than one bank over time and later assume the newest remembered account is the live destination.</p></article>
-            <article class="section-card info-tile"><h3>What To Do Next</h3><p>After reading this phase, move to Comparison and then Check Account to follow the proper official verification sequence.</p></article>
+
+          <div class="section-card solo-card" style="background: linear-gradient(135deg, #f8faff 0%%, #ffffff 100%%);">
+            <span class="pill-label">Security & Privacy</span>
+            <h3>Protecting Your Identity & Finances</h3>
+            <p>The Aadhaar-DBT system is built on "Security by Design" principles. Biometric data is encrypted and never shared with banks. When you link your Aadhaar, the bank only receives a confirmation of your identity. To further enhance privacy, residents can use <strong>Virtual IDs (VID)</strong> or <strong>Masked Aadhaar</strong> for non-DBT purposes, while the DBT system uses the unique 12-digit number to ensure precise payment routing to a single, authenticated bank account.</p>
           </div>
+
+          <div class="insight-grid">
+            <article class="section-card info-tile">
+              <h3>USSD Service (*99*99*1#)</h3>
+              <p>An official bridge for residents without internet access to verify their current NPCI bank mapping status directly from their mobile handset.</p>
+            </article>
+            <article class="section-card info-tile">
+              <h3>Consent Management</h3>
+              <p>Under the Aadhaar (Sharing of Information) Regulations, your consent is mandatory. No bank can map your account for DBT without your written or digital authorization.</p>
+            </article>
+            <article class="section-card info-tile">
+              <h3>One-Account Policy</h3>
+              <p>For security and efficiency, only one bank account can be active on the NPCI Mapper at any given time, preventing duplicate or fraudulent claims.</p>
+            </article>
+          </div>
+
           <div class="knowledge-grid">
             <article class="section-card feature-copy">
-              <h3>Detailed Learning Notes</h3>
-              <p>The purpose of this page is not only to introduce Aadhaar and DBT, but to help the resident think in the correct order. First understand what the bank has recorded, then understand how the DBT path works, then verify the live result on the official portals.</p>
+              <h3>Technical Learning Notes</h3>
+              <p>Understanding the internal workflow of the banking system helps in resolving issues faster. Banks process Aadhaar seeding in batches, and synchronization with the central NPCI server follows a rigorous validation cycle.</p>
               <ul class="steps-list">%s</ul>
             </article>
             <article class="section-card diagram-card">
-              <h3>Simple Flow</h3>
+              <h3>The Resident Journey</h3>
               <div class="diagram-stack">
-                <div class="diagram-node">Aadhaar Submitted To Bank</div>
+                <div class="diagram-node">1. Submission of Aadhaar & Consent</div>
                 <div class="diagram-arrow">&darr;</div>
-                <div class="diagram-node">Bank Records Aadhaar Linkage</div>
+                <div class="diagram-node">2. Bank-level KYC Validation</div>
                 <div class="diagram-arrow">&darr;</div>
-                <div class="diagram-node accent-node">Official Status Must Still Be Checked</div>
+                <div class="diagram-node accent-node">3. NPCI Central Mapper Update</div>
+                <div class="diagram-arrow">&darr;</div>
+                <div class="diagram-node success-node">4. Active DBT Readiness</div>
               </div>
             </article>
           </div>
-          <div class="insight-grid">
-            <article class="section-card info-tile"><h3>Example: New Account Opened</h3><p>A resident opens a new account and submits Aadhaar there. The resident should still verify whether the newly preferred bank is the live bank reflected in the official Aadhaar-bank result.</p></article>
-            <article class="section-card info-tile"><h3>Example: Old Bank Still Active</h3><p>A resident may remember using the latest bank, but an older bank path can still be relevant until the official update fully reflects the intended change.</p></article>
-            <article class="section-card info-tile"><h3>Example: Scheme Confusion</h3><p>Some users assume every scheme uses the same delivery path. Learning the distinction helps residents ask the correct question before visiting a branch or portal.</p></article>
+
+          <div class="section-card solo-card">
+            <h3>Glossary of Core Terms</h3>
+            <div class="insight-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+              <div>
+                <strong>Aadhaar Seeding:</strong> The process of entering your Aadhaar number into the bank's internal database for KYC.
+              </div>
+              <div>
+                <strong>NPCI Mapper:</strong> A central repository of Aadhaar numbers used by NPCI to route DBT payments to a specific bank.
+              </div>
+              <div>
+                <strong>APB System:</strong> Aadhaar Payment Bridge System used by departments to send money using only Aadhaar numbers.
+              </div>
+              <div>
+                <strong>LPG-DBTL (PAHAL):</strong> The pioneer scheme that established the Aadhaar-based transfer mechanism for gas subsidies.
+              </div>
+            </div>
           </div>
-          <aside class="note-panel">%s</aside>
+
+          <div class="insight-grid">
+            <article class="section-card info-tile">
+              <h3>Scenario: Branch Change</h3>
+              <p>If you transfer your account to a new branch of the same bank, your DBT mapping usually remains intact as it is tied to the bank entity, not the branch.</p>
+            </article>
+            <article class="section-card info-tile">
+              <h3>Scenario: Multi-Bank Seeding</h3>
+              <p>Residents may seed Aadhaar in multiple banks, but only the <strong>last bank</strong> that successfully updated the NPCI Mapper will receive the DBT funds.</p>
+            </article>
+            <article class="section-card info-tile">
+              <h3>Scenario: Account Dormancy</h3>
+              <p>If your mapped bank account becomes dormant due to inactivity, your DBT payments will fail even if the mapping on the portal appears as "Active".</p>
+            </article>
+          </div>
+
+          <aside class="note-panel">
+            <strong>Official Advisory:</strong> %s
+          </aside>
         </section>
         """
         .formatted(
             escape(content.learn().title()),
             escape(content.learn().subtitle()),
-            overview,
             overview,
             sectionHref(Section.COMPARISON),
             sectionHref(Section.CHECK_ACCOUNT),
@@ -295,7 +358,7 @@ public final class PageRenderer {
             <h3>Understanding the Two Databases</h3>
             <p>Every Indian resident should know that their Aadhaar number exists in two different contexts within the banking ecosystem. "Linking" is about your identity at a specific bank, while "Mapping" is about your financial address for the entire Government of India. Failure to understand this distinction is the leading cause of missing or delayed DBT payments.</p>
           </div>
-          
+
           <div class="hero-grid comparison-grid">
             <article class="section-card compare-card">
               <div class="compare-header">
@@ -572,43 +635,81 @@ public final class PageRenderer {
             video.url(), "Open Video Page"));
       }
     }
+
     VideoItem featuredVideo = embeddedVideos.isEmpty() ? null : embeddedVideos.get(0);
-    StringBuilder spotlightCards = new StringBuilder();
-    StringBuilder galleryCards = new StringBuilder();
+    StringBuilder officialGuides = new StringBuilder();
+    StringBuilder publicAwareness = new StringBuilder();
+
     for (int index = 1; index < embeddedVideos.size(); index++) {
       VideoItem video = embeddedVideos.get(index);
-      String card = index <= 3 ? miniVideoCard(video) : videoGalleryCard(video);
-      if (index <= 3) {
-        spotlightCards.append(card);
+      if (index <= 6) {
+        officialGuides.append(videoGalleryCard(video));
       } else {
-        galleryCards.append(card);
+        publicAwareness.append(videoGalleryCard(video));
       }
     }
-    if (galleryCards.isEmpty() && featuredVideo != null) {
-      for (int index = 1; index < embeddedVideos.size(); index++) {
-        galleryCards.append(videoGalleryCard(embeddedVideos.get(index)));
-      }
-    }
+
+    String spotlightInsights = """
+        <article class="section-card key-card" style="margin: 0; height: 100%;">
+          <div class="key-title">Video Insights</div>
+          <p class="support-copy">This featured video is the official baseline for understanding the Aadhaar Payment Bridge (APB) system. We recommend focusing on these three critical segments:</p>
+          <ul class="key-list">
+            <li><strong>The Consent Process:</strong> Pay attention to the 'Annexure 1' form mentioned in the tutorial.</li>
+            <li><strong>Seeding Logic:</strong> Observe how the bank triggers the central update.</li>
+            <li><strong>Verification:</strong> See the official portal navigation walkthrough.</li>
+          </ul>
+          <div class="note-panel" style="margin-top: 24px; background: rgba(255,255,255,0.5); border: 1px dashed var(--accent);">
+            <strong>Did You Know?</strong> Watching official tutorials can reduce verification errors by over 60%% by ensuring you follow the correct sequence.
+          </div>
+        </article>
+        """;
+
     return """
         <section class="main-section">
           <div class="section-heading">
-            <h2>Watch Video</h2>
-            <p>Official Aadhaar awareness videos are embedded here so the user can watch them directly inside the website without leaving this page.</p>
+            <h2>Official Video Library</h2>
+            <p>Access high-quality, authentic Aadhaar and DBT awareness videos directly from UIDAI and Government sources. These guides are designed to help you navigate the ecosystem with confidence.</p>
           </div>
-          %s
-          <div class="video-collection-intro section-card">
-            <div>
-              <span class="pill-label">In-Website Video Library</span>
-              <h3>More Official Aadhaar Awareness Videos</h3>
-              <p>These videos continue the same learning flow with app guidance, Aadhaar service use cases, verification walkthroughs, and public-awareness explainers.</p>
+
+          <div class="video-stage">
+            <span class="pill-label" style="margin-bottom: 16px;">Spotlight: Essential Guide</span>
+            %s
+          </div>
+
+          <div class="video-category-section">
+            <div class="section-banner-brand compact-brand" style="margin-bottom: 24px;">
+               <div class="home-icon-shell learn" style="width: 48px; height: 48px;"><svg class="home-icon-svg" style="width: 24px; height: 24px;" viewBox="0 0 64 64"><circle cx="32" cy="24" r="12" fill="#ffc107"/><rect x="26" y="38" width="12" height="12" rx="4" fill="#3078df"/></svg></div>
+               <div>
+                 <h3 style="margin: 0;">Official Service Guides</h3>
+                 <p style="margin: 0; font-size: 0.95rem;">Step-by-step tutorials on using Aadhaar services and the mAadhaar app.</p>
+               </div>
             </div>
+            <div class="video-embed-grid">%s</div>
           </div>
-          <div class="video-embed-grid">%s</div>
-          <div class="resource-grid">%s</div>
+
+          <div class="video-category-section">
+            <div class="section-banner-brand compact-brand" style="margin-bottom: 24px;">
+               <div class="home-icon-shell video" style="width: 48px; height: 48px;"><svg class="home-icon-svg" style="width: 24px; height: 24px;" viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="#3078df" fill-opacity="0.1"/><path d="M26 22l18 10-18 10z" fill="#3078df"/></svg></div>
+               <div>
+                 <h3 style="margin: 0;">Public Awareness Series</h3>
+                 <p style="margin: 0; font-size: 0.95rem;">Understand your rights, data security, and how DBT impacts your daily life.</p>
+               </div>
+            </div>
+            <div class="video-embed-grid">%s</div>
+          </div>
+
+          <div class="section-card solo-card">
+            <h3>External Video Resources</h3>
+            <p>For more specialized content and deeper archives, you may visit the official multimedia portals of these departments.</p>
+            <div class="resource-grid">%s</div>
+          </div>
         </section>
         """
-        .formatted(featuredVideo == null ? "" : featuredVideoLayout(featuredVideo, spotlightCards.toString()),
-            galleryCards, links);
+        .formatted(
+            featuredVideo == null ? "" : featuredVideoLayout(featuredVideo, spotlightInsights),
+            officialGuides,
+            publicAwareness,
+            links);
   }
 
   private String renderResourcesSection(AppContent content) {
@@ -760,7 +861,7 @@ public final class PageRenderer {
     return """
         <section class="main-section" id="ai-panel">
           <div class="section-heading">
-            <h2>AI Assistant</h2>
+            <h2>🤖 AI Doubt Assistant</h2>
             <p>Use suggested questions or ask your own Aadhaar and DBT question. The answer appears on this same page.</p>
           </div>
           <div class="split-grid">
@@ -887,25 +988,6 @@ public final class PageRenderer {
             escape(featuredVideo.embedId()),
             escape(featuredVideo.title()),
             spotlightCards);
-  }
-
-  private String miniVideoCard(VideoItem video) {
-    return """
-        <article class="section-card mini-video-card">
-          <div class="mini-video-frame"><iframe src="https://www.youtube.com/embed/%s" title="%s" loading="lazy" allowfullscreen></iframe></div>
-          <div class="embed-meta">
-            <span class="source-badge">%s</span>
-            <h3>%s</h3>
-            <p>%s</p>
-          </div>
-        </article>
-        """
-        .formatted(
-            escape(video.embedId()),
-            escape(video.title()),
-            escape(video.source()),
-            escape(video.title()),
-            escape(video.description()));
   }
 
   private String videoGalleryCard(VideoItem video) {
@@ -1126,14 +1208,16 @@ public final class PageRenderer {
         .nav-badge { background: rgba(255, 255, 255, 0.2); color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; min-width: 24px; text-align: center; }
         .nav-link.active .nav-badge { background: var(--primary); color: #fff; }
         .content-wrap { padding: 40px 32px; background: #fff; }
-        .main-section { display: flex; flex-direction: column; gap: 28px; }
+        .main-section { display: flex; flex-direction: column; gap: 32px; }
         .section-heading { margin-bottom: 40px; }
         .section-heading h2 { font-size: 2.5rem; font-weight: 800; margin: 0 0 12px; color: #1e293b; letter-spacing: -0.03em; }
         .section-heading p { margin: 0; font-size: 1.15rem; color: var(--muted); max-width: 900px; line-height: 1.6; }
         .section-card, .note-panel, .assessment-box { border: 1px solid var(--border); border-radius: 24px; background: var(--surface); box-shadow: 0 14px 32px rgba(84, 110, 160, 0.08); }
-        .solo-card { padding: 28px; }
+        .solo-card { padding: 32px; }
         .hero-grid, .split-grid, .knowledge-grid, .resource-summary, .video-feature { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-        .insight-grid, .portal-process-grid, .resource-grid, .video-embed-grid { display: grid; gap: 20px; }
+        .insight-grid, .portal-process-grid, .resource-grid, .video-embed-grid { display: grid; gap: 24px; }
+        .video-stage { margin-bottom: 40px; }
+        .video-category-section { display: flex; flex-direction: column; gap: 16px; padding: 32px; border-radius: 28px; background: #f9fbff; border: 1px solid #e2eaf7; }
         .insight-grid, .portal-process-grid, .resource-grid, .video-embed-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         .home-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
         .home-card { padding: 32px; border-radius: 24px; border: 1px solid var(--border); background: #fff; display: flex; flex-direction: column; gap: 24px; transition: transform 0.2s, box-shadow 0.2s; position: relative; }
@@ -1177,8 +1261,8 @@ public final class PageRenderer {
         .linked-panel { background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%); }
         .dbt-panel { background: linear-gradient(180deg, #fffaf0 0%, #fff0ce 100%); }
         .comparison-mini-flow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .compare-video, .video-frame, .embed-frame, .mini-video-frame { overflow: hidden; border-radius: 18px; background: linear-gradient(135deg, #26334d 0%, #3078df 100%); }
-        .compare-video iframe, .video-frame iframe, .embed-frame iframe, .mini-video-frame iframe { width: 100%; min-height: 260px; height: 100%; border: 0; display: block; }
+        .compare-video, .video-frame, .embed-frame { overflow: hidden; border-radius: 18px; background: linear-gradient(135deg, #26334d 0%, #3078df 100%); }
+        .compare-video iframe, .video-frame iframe, .embed-frame iframe { width: 100%; min-height: 260px; height: 100%; border: 0; display: block; }
         .table-shell { overflow: auto; border-radius: 18px; border: 1px solid var(--border); background: #fff; box-shadow: 0 14px 32px rgba(142,160,198,0.12); }
         table { width: 100%; border-collapse: collapse; }
         thead { background: #eaf2ff; }
@@ -1212,10 +1296,9 @@ public final class PageRenderer {
         .resource-actions { display: flex; margin-top: auto; }
         .resource-why { color: var(--muted); }
         .video-stage-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.95fr); gap: 22px; }
-        .featured-video-card, .mini-video-card, .video-collection-intro { padding: 22px; display: grid; gap: 16px; }
+        .featured-video-card, .video-collection-intro { padding: 22px; display: grid; gap: 16px; }
         .featured-frame iframe { min-height: 360px; }
         .video-spotlight-list { display: grid; gap: 16px; }
-        .mini-video-frame iframe { min-height: 164px; }
         .final-score-card { text-align: center; max-width: 860px; margin: 0 auto; padding: 34px; display: grid; gap: 16px; background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%); }
         .final-score-title { margin: 0; font-size: 1.8rem; }
         .final-score-subtitle { margin: 0; font-size: 1rem; color: var(--muted); line-height: 1.6; }
