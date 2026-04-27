@@ -2,7 +2,6 @@ package aadhaar.web;
 
 import aadhaar.backend.AwarenessService.AppContent;
 import aadhaar.backend.AwarenessService.CheckAccountSection;
-import aadhaar.backend.AwarenessService.ComparisonPoint;
 import aadhaar.backend.AwarenessService.QuizQuestion;
 import aadhaar.backend.AwarenessService.ResourceItem;
 import aadhaar.backend.AwarenessService.UiCopy;
@@ -24,14 +23,13 @@ public final class PageRenderer {
     String sectionHtml = switch (viewState.section()) {
       case HOME -> renderHomeSection(viewState, content);
       case LEARN -> renderLearnSection(viewState, content);
-      case COMPARISON -> renderComparisonSection(viewState, content);
+      case COMPARISON -> renderComparisonSection(content);
       case CHECK_ACCOUNT -> renderCheckSection(viewState, content);
       case VIDEOS -> renderVideoSection(content);
       case QUIZ -> renderQuizSection(viewState, content);
       case RESOURCES, GOVERNMENT -> renderResourcesSection(content);
       case AI_ASSISTANT -> renderAiAssistantSection(viewState);
     };
-    String phaseHtml = "";
     return """
         <!DOCTYPE html>
         <html lang="en">
@@ -63,7 +61,6 @@ public final class PageRenderer {
             </header>
             <main class="content-wrap">
               %s
-              %s
               <footer class="page-footer">%s</footer>
             </main>
           </div>
@@ -78,7 +75,6 @@ public final class PageRenderer {
         escape(ui.appSubtitle()),
         renderLanguageControl(),
         renderNavigation(viewState, ui),
-        phaseHtml,
         sectionHtml,
         escape(ui.footerNote()),
         behaviorScript());
@@ -262,29 +258,6 @@ public final class PageRenderer {
               </div>
             </article>
           </div>
-          <div class="knowledge-grid">
-            <article class="section-card branded-info-card">
-              <div class="section-banner-brand compact-brand">
-                <img src="/assets/aadhaar-logo.png" alt="Aadhaar logo">
-                <div>
-                  <h3>What Residents Usually Miss</h3>
-                  <p>People often remember the bank where they last submitted Aadhaar, but they do not always verify whether that same bank is the one currently aligned for Aadhaar-based benefits.</p>
-                </div>
-              </div>
-              <div class="branded-points">
-                <div class="diagram-node soft-node">Submitting Aadhaar at a branch is not the same as confirming current DBT destination status.</div>
-                <div class="diagram-node">A bank can acknowledge Aadhaar linkage while the resident still needs an official status check.</div>
-                <div class="diagram-node accent-node">The safest approach is to learn, compare, and then verify through official portals.</div>
-              </div>
-            </article>
-            <article class="section-card learn-image-card">
-              <img src="/assets/learn-panel.png" alt="Residents learning Aadhaar and DBT concepts">
-              <div class="learn-image-caption">
-                <h3>Visual Learning Support</h3>
-                <p>The illustration reinforces the main learning idea: a resident should understand the relationship between Aadhaar, bank records, and DBT flow before assuming that benefit transfer is already active.</p>
-              </div>
-            </article>
-          </div>
           <div class="insight-grid">
             <article class="section-card info-tile"><h3>Example: New Account Opened</h3><p>A resident opens a new account and submits Aadhaar there. The resident should still verify whether the newly preferred bank is the live bank reflected in the official Aadhaar-bank result.</p></article>
             <article class="section-card info-tile"><h3>Example: Old Bank Still Active</h3><p>A resident may remember using the latest bank, but an older bank path can still be relevant until the official update fully reflects the intended change.</p></article>
@@ -304,134 +277,184 @@ public final class PageRenderer {
             escape(content.learn().awarenessNote()));
   }
 
-  private String renderComparisonSection(ViewState viewState, AppContent content) {
-    StringBuilder rows = new StringBuilder();
-    for (ComparisonPoint point : content.comparison().comparisonPoints()) {
-      rows.append("<tr><td>").append(escape(point.factor())).append("</td><td>").append(escape(point.aadhaarLinked()))
-          .append("</td><td>").append(escape(point.dbtEnabled())).append("</td><td>").append(escape(point.impact()))
-          .append("</td></tr>");
-    }
+  private String renderComparisonSection(AppContent content) {
     return """
         <section class="main-section">
-          <div class="section-heading">
-            <h2>%s</h2>
-            <p>%s</p>
-          </div>
           <div class="section-banner comparison-banner">
             <div class="section-banner-brand">
-              <img src="/comparison_hero_banner_1777303789293.png" alt="Aadhaar and DBT Synchronization Illustration" style="width: 140px; border-radius: 20px;">
+              <img src="/assets/bank_sync_isometric_1777305125871.png" alt="Aadhaar and Banking Sync" style="width: 140px; border-radius: 20px;">
               <div>
-                <h2>Aadhaar Linking vs DBT Mapping</h2>
-                <p>A comprehensive deep-dive into why bank-side linkage is not the same as being "DBT Ready". Understanding this distinction is the key to solving 90%% of benefit-related issues.</p>
+                <h2>The Final Truth: Aadhaar Linking vs DBT Mapping</h2>
+                <p>Most residents fail to receive benefits because they stop at "Linking". This page provides the authentic technical distinction used by UIDAI and NPCI to route billions of rupees in government benefits.</p>
               </div>
             </div>
           </div>
+
+          <div class="section-card solo-card">
+            <span class="pill-label">The Core Difference</span>
+            <h3>Understanding the Two Databases</h3>
+            <p>Every Indian resident should know that their Aadhaar number exists in two different contexts within the banking ecosystem. "Linking" is about your identity at a specific bank, while "Mapping" is about your financial address for the entire Government of India. Failure to understand this distinction is the leading cause of missing or delayed DBT payments.</p>
+          </div>
+          
           <div class="hero-grid comparison-grid">
             <article class="section-card compare-card">
               <div class="compare-header">
-                <span class="pill-label">Technical Distinction</span>
-                <h3>The "Branch Link" vs The "Central Mapper"</h3>
-                <p>When you visit a branch, they link Aadhaar to your local account. However, for Government benefits, your Aadhaar must be "Mapped" in a central system (NPCI Mapper) to point to that specific bank.</p>
+                <span class="pill-label">Technical Deep-Dive</span>
+                <h3>Branch Seeding vs NPCI Mapping</h3>
+                <p>When you provide Aadhaar to a bank, they "seed" it in their internal database. But for DBT, that bank must then "map" it in the central NPCI (National Payments Corporation of India) system. If this second step is missed, you remain unmapped.</p>
               </div>
               <div class="compare-columns">
                 <div class="compare-panel linked-panel">
-                  <h4>Aadhaar Linked (Local)</h4>
+                  <h4>Aadhaar Linked (Internal)</h4>
                   <ul class="key-list">
-                    <li><strong>Status:</strong> Associated with a specific bank account.</li>
-                    <li><strong>Scope:</strong> Used for KYC and local bank operations.</li>
-                    <li><strong>Action:</strong> Done at the bank branch or mobile app.</li>
-                    <li><strong>Result:</strong> "Aadhaar is linked with your account."</li>
+                    <li><strong>Database:</strong> Stored in the Bank's local server.</li>
+                    <li><strong>Purpose:</strong> KYC compliance and account operations.</li>
+                    <li><strong>Constraint:</strong> Can be linked to multiple bank accounts.</li>
+                    <li><strong>Status:</strong> Often shown as "Aadhaar Linked" on bank apps.</li>
                   </ul>
                 </div>
                 <div class="compare-panel dbt-panel">
-                  <h4>DBT Enabled (Central)</h4>
+                  <h4>DBT Mapped (National)</h4>
                   <ul class="key-list">
-                    <li><strong>Status:</strong> Active in the NPCI central routing hub.</li>
-                    <li><strong>Scope:</strong> Used by all Govt departments to send funds.</li>
-                    <li><strong>Action:</strong> Requires NPCI Mapper Seeding request.</li>
-                    <li><strong>Result:</strong> "Aadhaar is Mapped for DBT."</li>
+                    <li><strong>Database:</strong> Registered on the NPCI Central Mapper.</li>
+                    <li><strong>Purpose:</strong> Routing Government Subsidy (Gas, PM-Kisan, etc).</li>
+                    <li><strong>Constraint:</strong> Can only be active for <strong>ONE</strong> bank at a time.</li>
+                    <li><strong>Status:</strong> Shown as "Mapped" on the official Resident Portal.</li>
                   </ul>
                 </div>
               </div>
               <div class="compare-example-grid">
                 <div class="compare-example">
-                  <strong>The "Old Account" Trap</strong>
-                  <p>Ravi has accounts in Bank A (Old) and Bank B (New). He linked Aadhaar to Bank B yesterday. However, the Central Mapper still points to Bank A. His next subsidy will still go to Bank A until Bank B successfully updates the Central Mapper.</p>
+                  <strong>Authentic Case 1: The Multi-Account Conflict</strong>
+                  <p>Ramesh has accounts in SBI and HDFC. He linked Aadhaar to SBI in 2020. In 2024, he linked it to HDFC for a loan. He expects his pension in HDFC, but it still goes to SBI because SBI was the last bank to successfully update the NPCI Mapper. Linking HDFC did not automatically "Move" the mapping.</p>
                 </div>
                 <div class="compare-example">
-                  <strong>The "KYC Only" Mistake</strong>
-                  <p>Suma gave her Aadhaar for KYC to open an account. While the account is "Linked", she didn't specifically sign the "DBT Consent Form". Her account remains unmapped for benefits despite being fully KYC compliant.</p>
+                  <strong>Authentic Case 2: The E-KYC Illusion</strong>
+                  <p>Anjali opened a digital account using Aadhaar OTP (E-KYC). She assumes she is "DBT Ready". However, E-KYC only verifies identity. To receive DBT, she must separately submit a "DBT Consent Form" to her bank to authorize them to update her mapping in the central system.</p>
                 </div>
               </div>
             </article>
 
             <article class="section-card feature-copy comparison-visual-card">
               <div class="section-banner-brand compact-brand">
-                <img src="/dbt_flow_logic_1777303859813.png" alt="DBT Flow Illustration" style="width: 80px;">
+                <img src="/assets/dbt_notification_premium_1777305187852.png" alt="DBT Success Notification" style="width: 80px;">
                 <div>
-                  <h3>How Funds Find You</h3>
-                  <p>The Government doesn't need your bank account number. They only need your Aadhaar. The 'Mapper' decides where that money actually lands.</p>
+                  <h3>Direct Benefit Flow</h3>
+                  <p>The Government uses your Aadhaar as a "Financial Address". The NPCI Mapper acts like a Post Office, looking up which bank currently holds your "Mapping" to deliver the funds.</p>
                 </div>
               </div>
               <div class="compare-video"><iframe src="https://www.youtube.com/embed/t2RfIMizWwc" title="Aadhaar linked versus DBT enabled" loading="lazy" allowfullscreen></iframe></div>
               <div class="comparison-flow-card">
                 <div class="comparison-mini-flow">
-                  <div class="diagram-node">Govt Treasury</div>
+                  <div class="diagram-node">Govt Department</div>
                   <div class="diagram-arrow">&rarr;</div>
-                  <div class="diagram-node accent-node">NPCI Mapper (The Switch)</div>
+                  <div class="diagram-node accent-node">NPCI Mapper (The Router)</div>
                   <div class="diagram-arrow">&rarr;</div>
-                  <div class="diagram-node success-node">Your Bank</div>
+                  <div class="diagram-node success-node">Active Mapped Bank</div>
                 </div>
               </div>
-              <div class="note-panel" style="margin-top: 10px; font-size: 0.9rem;">
-                <strong>Pro Tip:</strong> Always look for the "Bank Name" in your official status. If it's not your current bank, your money is going elsewhere.
+              <div class="note-panel" style="margin-top: 10px; font-size: 0.9rem; border-left: 4px solid var(--accent);">
+                <strong>Authentic Warning:</strong> If you recently updated your bank, it takes up to 15 days for the NPCI Mapper to reflect the change. During this window, funds may still go to the old bank.
               </div>
             </article>
           </div>
+
           <div class="insight-grid">
-            <article class="section-card info-tile"><h3>What Linked Tells You</h3><p>It indicates that Aadhaar has been associated with a bank account record. This is useful, but it is still only part of the complete DBT picture.</p></article>
-            <article class="section-card info-tile"><h3>What DBT Enabled Tells You</h3><p>It is closer to the actual payment destination logic, which is why residents should pay extra attention to the bank shown in the official result.</p></article>
-            <article class="section-card info-tile"><h3>Why Comparison Matters</h3><p>Without this distinction, users may complain that they linked Aadhaar but did not receive DBT, when the real issue is the currently active destination path.</p></article>
+            <article class="section-card info-tile">
+              <h3>USSD Verification</h3>
+              <p>Dial <strong>*99*99*1#</strong> from your Registered Mobile Number to get an instant, authentic status of your bank mapping directly from the NPCI system.</p>
+            </article>
+            <article class="section-card info-tile">
+              <h3>The 15-Day Rule</h3>
+              <p>Mapping is not instant. It involves a batch update process between your bank and the central clearing house. Always wait 2 weeks before re-checking your status.</p>
+            </article>
+            <article class="section-card info-tile">
+              <h3>Consent is Mandatory</h3>
+              <p>Under RBI guidelines, banks cannot map your account for DBT without your explicit written or digital consent. Check if you have signed the 'Annexure 1' form.</p>
+            </article>
           </div>
-          <section class="info-block">
-            <div class="section-heading">
-              <h3>%s</h3>
-              <p>%s</p>
-            </div>
-            <div class="table-shell"><table class="comparison-table"><thead><tr><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr></thead><tbody>%s</tbody></table></div>
-          </section>
-          <div class="knowledge-grid">
+
+          <div class="hero-grid">
             <article class="section-card feature-copy">
-              <h3>Step-by-Step Interpretation</h3>
+              <h3>Common Misconceptions</h3>
+              <p>Residents often have misunderstandings about how the central banking system works. Here are the most frequent myths corrected by official guidance:</p>
               <ul class="steps-list">
-                <li><strong>Step 1:</strong> Identify where you WANT the money (e.g., Bank B).</li>
-                <li><strong>Step 2:</strong> Check the "Bank Mapper Status" online.</li>
-                <li><strong>Step 3:</strong> If it shows Bank A, visit Bank B and ask for "NPCI Mapping Update", not just "Linking".</li>
-                <li><strong>Step 4:</strong> Re-verify after 10 days to ensure the mapping has shifted to Bank B.</li>
+                <li><strong>"Every account linked is DBT ready":</strong> False. Linking is for KYC; Mapping is for DBT. Only one account can be mapped at a time across all your bank accounts.</li>
+                <li><strong>"I can choose which bank gets which scheme":</strong> False. All Aadhaar-based DBT schemes (Gas, PM-Kisan, etc.) will go to the SINGLE bank currently mapped in the NPCI central database. You cannot split schemes across different banks using Aadhaar.</li>
+                <li><strong>"OTP means it's done":</strong> False. OTP is for identity verification. The bank must still trigger a manual or automated update to the NPCI system to register your account as the active destination.</li>
+                <li><strong>"Closing an account fixes it":</strong> Partially. Closing the mapped bank account might stop payments, but you must still manually visit your new bank to request a mapping update to ensure future benefits arrive.</li>
               </ul>
             </article>
-            <article class="section-card branded-info-card" style="background: linear-gradient(135deg, #3078df 0%%, #1e40af 100%%); color: #fff;">
-              <div style="padding: 20px;">
-                <h3 style="color: #fff;">Why This Matters To You</h3>
-                <p style="color: rgba(255,255,255,0.9);">Thousands of residents lose time visiting branches because they don't know that 'Linking' is a local bank action while 'Mapping' is a national routing action. This page gives you the technical edge to ask the right questions at the bank.</p>
+            <article class="section-card key-card">
+              <div class="key-title">The Role of Consent</div>
+              <p>When you visit a bank, you must explicitly ask for <strong>"NPCI Seeding"</strong>. Many residents simply ask for "Aadhaar Linking", which only satisfies the bank's internal KYC requirements. Ensure you fill out the specific consent form mentioned in RBI circulars to authorize the bank to move your "Financial Address" to their branch.</p>
+              <p>This consent is a legal requirement. Banks are not allowed to map your account for DBT without your signed authorization, usually via a form called 'Annexure 1'.</p>
+              <div class="note-panel" style="background: rgba(255,255,255,0.5); border: 1px dashed var(--accent);">
+                <strong>Pro Tip:</strong> Ask the bank operator specifically: "Is my Aadhaar mapped on the NPCI Mapper for this account?" and request a printed confirmation if possible.
               </div>
             </article>
-
           </div>
-          <aside class="note-panel">%s</aside>
+
+          <div class="section-card solo-card">
+            <h3>The Synchronization Timeline</h3>
+            <p>A common source of frustration is the time it takes for updates to reflect across systems. Understanding the timeline helps manage expectations.</p>
+            <div class="comparison-flow-card" style="border: none; background: transparent; padding: 0;">
+              <div class="comparison-mini-flow" style="flex-wrap: wrap; gap: 20px;">
+                <div class="diagram-node">Day 1: Consent at Bank</div>
+                <div class="diagram-arrow">&rarr;</div>
+                <div class="diagram-node">Day 2-5: Bank Updates NPCI</div>
+                <div class="diagram-arrow">&rarr;</div>
+                <div class="diagram-node accent-node">Day 7-10: Central Propagation</div>
+                <div class="diagram-arrow">&rarr;</div>
+                <div class="diagram-node success-node">Day 15: Ready for DBT</div>
+              </div>
+            </div>
+            <p style="margin-top: 20px; font-size: 0.95rem;">If you check your status on the UIDAI portal before this 15-day window closes, you may still see your old bank listed. This does not mean the update failed; it simply means the central system has not yet refreshed its cache of the national mapper data.</p>
+          </div>
+
+          <section class="info-block">
+            <div class="section-heading">
+              <h3>Technical Comparison Table</h3>
+              <p>Comparing the two states based on official UIDAI and NPCI documentation.</p>
+            </div>
+            <div class="table-shell">
+              <table class="comparison-table">
+                <thead>
+                  <tr><th>Feature</th><th>Aadhaar Linked</th><th>DBT Mapped</th><th>Impact</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>System Level</td><td>Local Bank Database</td><td>Central NPCI Mapper</td><td>Routing depends on Central level only.</td></tr>
+                  <tr><td>Number of Accounts</td><td>Can be many</td><td>Strictly ONE active</td><td>Money cannot be split between banks.</td></tr>
+                  <tr><td>KYC Role</td><td>Verified Identity</td><td>Payment Destination</td><td>KYC is for the bank; Mapping is for the Govt.</td></tr>
+                  <tr><td>Action Required</td><td>KYC Update</td><td>NPCI Seeding Request</td><td>Both must be completed for success.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <div class="knowledge-grid">
+            <article class="section-card feature-copy">
+              <h3>How to Resolve a Mismatch</h3>
+              <ul class="steps-list">
+                <li><strong>1. Identification:</strong> Use the "Check Account" phase to see which bank is officially mapped.</li>
+                <li><strong>2. Reconciliation:</strong> If the bank shown is not your preferred one, visit your preferred bank branch.</li>
+                <li><strong>3. Action:</strong> Specifically ask for "DBT Seeding/Mapping" via the NPCI Mapper.</li>
+                <li><strong>4. Confirmation:</strong> Take a receipt and re-verify on the portal after 15 days.</li>
+              </ul>
+            </article>
+            <article class="section-card branded-info-card" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff;">
+              <div style="padding: 20px;">
+                <h3 style="color: #fff;">Professional Advice</h3>
+                <p style="color: rgba(255,255,255,0.9);">Authenticity in DBT arrives from the <strong>NPCI Mapper</strong>. Banks often use the term "Aadhaar Seeding" loosely. When talking to bank officials, always use the term <strong>"NPCI Mapper Update"</strong> to ensure they trigger the correct national-level routing update instead of just a local account link.</p>
+              </div>
+            </article>
+          </div>
+
+          <aside class="note-panel">
+            <strong>Note:</strong> This portal is for awareness and educational purposes based on publicly available guidance from UIDAI and NPCI. Always rely on official government portals for final transaction status.
+          </aside>
         </section>
-        """
-        .formatted(
-            escape(content.comparison().title()),
-            escape(content.comparison().subtitle()),
-            escape(content.ui().comparisonTitle()),
-            escape(content.ui().comparisonSubtitle()),
-            escape(content.ui().factorHeader()),
-            escape(content.ui().linkedHeader()),
-            escape(content.ui().dbtHeader()),
-            escape(content.ui().impactHeader()),
-            rows,
-            escape(content.comparison().awarenessNote()));
+        """;
   }
 
   private String renderCheckSection(ViewState viewState, AppContent content) {
@@ -1078,7 +1101,7 @@ public final class PageRenderer {
           --shadow: 0 18px 42px rgba(48, 83, 146, 0.12);
         }
         * { box-sizing: border-box; }
-        body { margin: 0; padding: 20px; background: linear-gradient(180deg, #f4f7fc 0%%, #eef4fb 100%%); color: var(--text); font-family: "Segoe UI", system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+        body { margin: 0; padding: 20px; background: linear-gradient(180deg, #f4f7fc 0%, #eef4fb 100%); color: var(--text); font-family: "Segoe UI", system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
         a { color: inherit; text-decoration: none; }
         .page-shell { max-width: 1320px; margin: 0 auto; background: var(--surface); border: 1px solid #d9e2ef; border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
         .window-bar { display: flex; gap: 8px; align-items: center; height: 40px; padding: 0 16px; background: #fff; border-bottom: 1px solid var(--border); }
@@ -1109,15 +1132,6 @@ public final class PageRenderer {
         .section-heading p { margin: 0; font-size: 1.15rem; color: var(--muted); max-width: 900px; line-height: 1.6; }
         .section-card, .note-panel, .assessment-box { border: 1px solid var(--border); border-radius: 24px; background: var(--surface); box-shadow: 0 14px 32px rgba(84, 110, 160, 0.08); }
         .solo-card { padding: 28px; }
-        .phase-shell { margin-bottom: 28px; }
-        .phase-trail { margin-bottom: 12px; color: var(--muted); font-weight: 600; }
-        .phase-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-        .phase-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 18px; border: 1px solid var(--border); background: #f8fbff; color: var(--muted); }
-        .phase-card.active { background: linear-gradient(90deg, var(--primary), var(--primary-dark)); color: #fff; border-color: transparent; }
-        .phase-number { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; background: rgba(48, 120, 223, 0.12); font-weight: 800; }
-        .phase-card.active .phase-number { background: rgba(255,255,255,0.18); }
-        .phase-label { font-weight: 800; }
-        .phase-arrow { margin-left: auto; font-size: 1.4rem; }
         .hero-grid, .split-grid, .knowledge-grid, .resource-summary, .video-feature { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
         .insight-grid, .portal-process-grid, .resource-grid, .video-embed-grid { display: grid; gap: 20px; }
         .insight-grid, .portal-process-grid, .resource-grid, .video-embed-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1139,70 +1153,54 @@ public final class PageRenderer {
         .home-card-copy p { margin: 0; color: var(--muted); line-height: 1.5; font-size: 1rem; }
         .home-card-button { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 12px; background: #f1f5f9; color: var(--primary); font-weight: 700; border-radius: 12px; font-size: 0.95rem; transition: background 0.2s; }
         .home-card-button:hover { background: #e2e8f0; }
-        .section-banner { padding: 24px; display: grid; gap: 14px; background: linear-gradient(180deg, #ffffff 0%%, #f8fbff 100%%); }
-        .comparison-banner { background: linear-gradient(180deg, #fffdf6 0%%, #f8fbff 100%%); }
+        .section-banner { padding: 24px; display: grid; gap: 14px; background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%); }
+        .comparison-banner { background: linear-gradient(180deg, #fffdf6 0%, #f8fbff 100%); }
         .section-banner-brand { display: flex; align-items: center; gap: 16px; }
         .section-banner-brand img { width: 84px; max-width: 100%; height: auto; flex: 0 0 auto; object-fit: contain; }
         .compact-brand { align-items: flex-start; }
         .compact-brand img { width: 70px; border-radius: 16px; }
-        .section-banner p, .support-copy, .feature-copy p, .compare-example p, .resource-card p, .portal-card p, .note-panel, .learn-image-caption p { color: var(--muted); line-height: 1.65; }
-        .learn-hero-card, .key-card, .form-card, .steps-card, .feature-copy, .portal-card, .resource-card, .quiz-card, .compare-card, .diagram-card, .info-tile, .learn-image-card, .branded-info-card { padding: 24px; }
-        .learn-hero-card img, .learn-image-card img { width: 100%; height: auto; display: block; border-radius: 18px; object-fit: cover; }
-        .learn-hero-copy, .learn-image-caption, .branded-info-card, .branded-points, .compare-card, .comparison-visual-card, .embed-meta, .featured-video-copy { display: grid; gap: 14px; }
+        .section-banner p, .support-copy, .feature-copy p, .compare-example p, .resource-card p, .portal-card p, .note-panel { color: var(--muted); line-height: 1.65; }
+        .learn-hero-card, .key-card, .form-card, .steps-card, .feature-copy, .portal-card, .resource-card, .quiz-card, .compare-card, .diagram-card, .info-tile, .branded-info-card { padding: 24px; }
+        .learn-hero-card img { width: 100%; height: auto; display: block; border-radius: 18px; object-fit: cover; }
+        .learn-hero-copy, .branded-info-card, .compare-card, .comparison-visual-card, .embed-meta, .featured-video-copy { display: grid; gap: 14px; }
         .pill-label, .source-badge, .quiz-progress, .quiz-complete-badge { display: inline-flex; align-items: center; width: fit-content; padding: 6px 11px; border-radius: 999px; background: #edf4ff; color: var(--primary-dark); font-size: 0.8rem; font-weight: 800; }
-        .key-card { background: linear-gradient(180deg, #fff9ea 0%%, #fff4d8 100%%); }
+        .key-card { background: linear-gradient(180deg, #fff9ea 0%, #fff4d8 100%); }
         .key-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 14px; }
         .key-list, .steps-list, .detail-list { margin: 0; padding-left: 22px; display: grid; gap: 10px; line-height: 1.65; }
         .diagram-stack { display: grid; gap: 10px; margin-top: 16px; }
         .diagram-node { padding: 14px 16px; border-radius: 16px; background: #f5f8ff; border: 1px solid #dbe4f3; text-align: center; font-weight: 800; }
         .accent-node { background: #fff4d8; border-color: #f1cf72; }
-        .soft-node { background: #eef4ff; }
+        .success-node { background: #ecfdf5; border-color: #34d399; color: #065f46; }
         .diagram-arrow { text-align: center; color: var(--primary-dark); font-size: 1.2rem; font-weight: 800; }
-        .compare-columns, .compare-example-grid, .diagram-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-        .compare-panel, .compare-example, .diagram-panel, .comparison-flow-card { padding: 16px; border-radius: 18px; border: 1px solid #dce5f6; background: #fff; }
-        .linked-panel { background: linear-gradient(180deg, #ffffff 0%%, #f8faff 100%%); }
-        .dbt-panel { background: linear-gradient(180deg, #fffaf0 0%%, #fff0ce 100%%); }
-        .comparison-mini-flow { display: grid; grid-template-columns: 70px 28px 1fr 28px 1fr; align-items: center; gap: 10px; }
-        .comparison-mini-flow img { width: 60px; height: auto; display: block; margin: 0 auto; }
-        .compare-video, .video-frame, .embed-frame, .mini-video-frame { overflow: hidden; border-radius: 18px; background: linear-gradient(135deg, #26334d 0%%, #3078df 100%%); }
+        .compare-columns, .compare-example-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .compare-panel, .compare-example, .comparison-flow-card { padding: 16px; border-radius: 18px; border: 1px solid #dce5f6; background: #fff; }
+        .linked-panel { background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%); }
+        .dbt-panel { background: linear-gradient(180deg, #fffaf0 0%, #fff0ce 100%); }
+        .comparison-mini-flow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .compare-video, .video-frame, .embed-frame, .mini-video-frame { overflow: hidden; border-radius: 18px; background: linear-gradient(135deg, #26334d 0%, #3078df 100%); }
         .compare-video iframe, .video-frame iframe, .embed-frame iframe, .mini-video-frame iframe { width: 100%; min-height: 260px; height: 100%; border: 0; display: block; }
         .table-shell { overflow: auto; border-radius: 18px; border: 1px solid var(--border); background: #fff; box-shadow: 0 14px 32px rgba(142,160,198,0.12); }
         table { width: 100%; border-collapse: collapse; }
         thead { background: #eaf2ff; }
         th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid #e6ebf7; line-height: 1.6; }
-        .note-panel { padding: 20px 22px; background: linear-gradient(180deg, #fff9e7 0%%, #fff3d1 100%%); color: #7e5d10; }
+        .note-panel { padding: 20px 22px; background: linear-gradient(180deg, #fff9e7 0%, #fff3d1 100%); color: #7e5d10; }
         .button-row, .site-link-group, .quiz-actions, .featured-video-meta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
         .primary-button, .ghost-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 18px; border-radius: 12px; border: 0; cursor: pointer; font-size: 0.92rem; font-weight: 800; }
-        .primary-button { background: linear-gradient(90deg, var(--primary) 0%%, var(--primary-dark) 100%%); color: #fff; box-shadow: 0 14px 30px rgba(48,120,223,0.22); }
+        .primary-button { background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; box-shadow: 0 14px 30px rgba(48,120,223,0.22); }
         .ghost-button { background: #eef3fe; color: var(--primary-dark); }
         .check-grid, .quiz-options { display: grid; gap: 12px; margin-bottom: 18px; }
         .check-option { display: flex; align-items: flex-start; gap: 12px; padding: 13px 15px; border-radius: 14px; background: var(--surface-soft); border: 1px solid #e3e9f6; }
         .quiz-option { display: flex; align-items: center; gap: 14px; padding: 18px 22px; border-radius: 18px; border: 1.5px solid var(--border); background: #fff; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 500; }
         .quiz-option:hover { border-color: var(--primary); background: #f8fbff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(48, 120, 223, 0.08); }
         .feedback-state { cursor: default !important; transform: none !important; box-shadow: none !important; }
-        .feedback-state input { opacity: 0.8; }
-        
         .correct-option-reveal { border-color: #10b981 !important; background: #ecfdf5 !important; color: #065f46 !important; font-weight: 700; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
         .wrong-option-reveal { border-color: #ef4444 !important; background: #fef2f2 !important; color: #991b1b !important; font-weight: 700; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1); }
-        
         .quiz-feedback-container { margin-top: 28px; padding: 24px; border-radius: 24px; animation: slideInUp 0.4s ease-out; }
-        .quiz-feedback-container.is-correct { background: linear-gradient(135deg, #f0fdf4 0%%, #dcfce7 100%%); border: 1px solid #bbf7d0; }
-        .quiz-feedback-container.is-wrong { background: linear-gradient(135deg, #fffbeb 0%%, #fef3c7 100%%); border: 1px solid #fde68a; }
-        
-        .feedback-badge { margin-bottom: 12px; }
-        .feedback-badge h3 { margin: 0; font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-        .is-correct .feedback-badge h3 { color: #15803d; }
-        .is-wrong .feedback-badge h3 { color: #b45309; }
-        
-        .quiz-feedback-container p { margin: 0; font-size: 1.05rem; line-height: 1.6; color: #374151; font-weight: 500; }
-        
-        @keyframes slideInUp {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
+        .quiz-feedback-container.is-correct { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #bbf7d0; }
+        .quiz-feedback-container.is-wrong { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid #fde68a; }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         input[type="checkbox"], input[type="radio"] { margin-top: 5px; accent-color: var(--primary-dark); }
-        .aadhaar-lookup { display: grid; gap: 10px; margin-bottom: 18px; padding: 16px; border-radius: 16px; border: 1px solid #dde6f6; background: linear-gradient(180deg, #fbfcff 0%%, #f4f7fd 100%%); }
+        .aadhaar-lookup { display: grid; gap: 10px; margin-bottom: 18px; padding: 16px; border-radius: 16px; border: 1px solid #dde6f6; background: linear-gradient(180deg, #fbfcff 0%, #f4f7fd 100%); }
         .field-label { font-size: 0.85rem; font-weight: 800; color: #53627f; }
         .aadhaar-input, .ai-textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid #cfdbf0; background: #fff; color: var(--text); font: inherit; }
         .ai-textarea { min-height: 160px; resize: vertical; }
@@ -1210,8 +1208,6 @@ public final class PageRenderer {
         .assessment-box.success { background: var(--success); color: var(--success-text); }
         .assessment-box.warning { background: var(--warning); color: var(--warning-text); }
         .assessment-box.danger { background: var(--danger); color: var(--danger-text); }
-        .correct-option { border-color: #83d1a4; background: #eefaf2; }
-        .wrong-option { border-color: #f1a7a7; background: #fff1f1; }
         .resource-card, .embed-card, .portal-card { display: grid; gap: 14px; }
         .resource-actions { display: flex; margin-top: auto; }
         .resource-why { color: var(--muted); }
@@ -1220,7 +1216,7 @@ public final class PageRenderer {
         .featured-frame iframe { min-height: 360px; }
         .video-spotlight-list { display: grid; gap: 16px; }
         .mini-video-frame iframe { min-height: 164px; }
-        .final-score-card { text-align: center; max-width: 860px; margin: 0 auto; padding: 34px; display: grid; gap: 16px; background: linear-gradient(180deg, #ffffff 0%%, #f8fbff 100%%); }
+        .final-score-card { text-align: center; max-width: 860px; margin: 0 auto; padding: 34px; display: grid; gap: 16px; background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%); }
         .final-score-title { margin: 0; font-size: 1.8rem; }
         .final-score-subtitle { margin: 0; font-size: 1rem; color: var(--muted); line-height: 1.6; }
         .final-score-subtitle.strong { font-size: 1.08rem; font-weight: 800; color: var(--text); }
@@ -1229,12 +1225,12 @@ public final class PageRenderer {
         .final-metric { display: grid; gap: 8px; padding: 18px; border-radius: 18px; background: #f5f8ff; border: 1px solid #dce6f7; }
         .final-metric span { color: var(--muted); font-size: 0.92rem; }
         .final-metric strong { font-size: 1.5rem; color: var(--text); }
-        .final-metric.highlight { background: linear-gradient(180deg, #edf4ff 0%%, #dfeaff 100%%); border-color: #cbdcf8; }
+        .final-metric.highlight { background: linear-gradient(180deg, #edf4ff 0%, #dfeaff 100%); border-color: #cbdcf8; }
         .centered-actions { justify-content: center; }
         .faq-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
         .page-footer { text-align: center; margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; }
         @media (max-width: 1120px) {
-          .hero-grid, .split-grid, .knowledge-grid, .resource-summary, .video-feature, .portal-process-grid, .resource-grid, .video-embed-grid, .insight-grid, .home-grid, .compare-columns, .compare-example-grid, .diagram-split, .phase-steps, .video-stage-grid, .quiz-result-metrics, .comparison-mini-flow { grid-template-columns: 1fr; }
+          .hero-grid, .split-grid, .knowledge-grid, .resource-summary, .video-feature, .portal-process-grid, .resource-grid, .video-embed-grid, .insight-grid, .home-grid, .compare-columns, .compare-example-grid, .diagram-split, .video-stage-grid, .quiz-result-metrics { grid-template-columns: 1fr; }
           .faq-list { grid-template-columns: 1fr; }
         }
         @media (max-width: 768px) {
