@@ -67,10 +67,12 @@ public final class AwarenessWebServer {
     public record AadhaarLookupResult(String aadhaarNumber, String title, String body, String toneClass) {
     }
 
-    public record CheckFormState(String aadhaarNumber, boolean linked, boolean seeded, boolean preferredBank, boolean schemeUsesDbt) {
+    public record CheckFormState(String aadhaarNumber, boolean linked, boolean seeded, boolean preferredBank,
+            boolean schemeUsesDbt) {
     }
 
-    public record QuizAssessment(long seed, int step, int score, int total, int selectedIndex, boolean showFeedback, boolean completed, String explanation) {
+    public record QuizAssessment(long seed, int step, int score, int total, int selectedIndex, boolean showFeedback,
+            boolean completed, String explanation) {
     }
 
     public record AiAssistantState(String selectedFaqId, String aiQuestion, String aiAnswer, String aiError) {
@@ -140,7 +142,8 @@ public final class AwarenessWebServer {
                 String page = renderer.renderPage(viewState, content);
                 writeString(exchange, 200, "text/html; charset=UTF-8", page);
             } catch (RuntimeException exception) {
-                writeString(exchange, 500, "text/html; charset=UTF-8", renderer.renderErrorPage(exception.getMessage()));
+                writeString(exchange, 500, "text/html; charset=UTF-8",
+                        renderer.renderErrorPage(exception.getMessage()));
             } finally {
                 exchange.close();
             }
@@ -167,9 +170,11 @@ public final class AwarenessWebServer {
                 aadhaarLookupResult = buildAadhaarLookupResult(checkFormState.aadhaarNumber());
             }
 
-            QuizAssessment quizAssessment = buildQuizAssessment(params, exchange.getRequestMethod(), content.quizQuestions());
+            QuizAssessment quizAssessment = buildQuizAssessment(params, exchange.getRequestMethod(),
+                    content.quizQuestions());
             AiAssistantState aiAssistantState = buildAiAssistantState(section, params, exchange.getRequestMethod());
-            return new ViewState(section, language, checkFormState, checkAssessment, aadhaarLookupResult, quizAssessment, aiAssistantState);
+            return new ViewState(section, language, checkFormState, checkAssessment, aadhaarLookupResult,
+                    quizAssessment, aiAssistantState);
         }
     }
 
@@ -225,12 +230,17 @@ public final class AwarenessWebServer {
             return null;
         }
         if (!isValidAadhaar(aadhaarNumber)) {
-            return new AadhaarLookupResult(aadhaarNumber, "Invalid Aadhaar Number Format", "Enter a valid 12-digit Aadhaar number. This website validates the format only; live linked status must still be checked from official resident services.", "danger");
+            return new AadhaarLookupResult(aadhaarNumber, "Invalid Aadhaar Number Format",
+                    "Enter a valid 12-digit Aadhaar number. This website validates the format only; live linked status must still be checked from official resident services.",
+                    "danger");
         }
-        return new AadhaarLookupResult(aadhaarNumber, "Aadhaar Number Format Verified", "The number format looks valid. For the actual linked or not-linked bank result, continue to the official UIDAI and bank workflow listed on this page.", "success");
+        return new AadhaarLookupResult(aadhaarNumber, "Aadhaar Number Format Verified",
+                "The number format looks valid. For the actual linked or not-linked bank result, continue to the official UIDAI and bank workflow listed on this page.",
+                "success");
     }
 
-    private static QuizAssessment buildQuizAssessment(Map<String, List<String>> params, String requestMethod, List<QuizQuestion> allQuestions) {
+    private static QuizAssessment buildQuizAssessment(Map<String, List<String>> params, String requestMethod,
+            List<QuizQuestion> allQuestions) {
         String startQuiz = first(params, "startQuiz");
         String restartQuiz = first(params, "restartQuiz");
         if ("1".equals(startQuiz) || "1".equals(restartQuiz)) {
@@ -246,14 +256,16 @@ public final class AwarenessWebServer {
 
         List<QuizQuestion> questions = pickQuestions(allQuestions, seed, 5);
         if (!"POST".equalsIgnoreCase(requestMethod)) {
-            return new QuizAssessment(seed, Math.min(step, questions.size() - 1), score, questions.size(), -1, false, false, "");
+            return new QuizAssessment(seed, Math.min(step, questions.size() - 1), score, questions.size(), -1, false,
+                    false, "");
         }
 
         int selectedIndex = parseInt(first(params, "quizOption"), -1);
         QuizQuestion question = questions.get(step);
         int updatedScore = score + (selectedIndex == question.correctIndex() ? 1 : 0);
         boolean completed = step >= questions.size() - 1;
-        return new QuizAssessment(seed, step, updatedScore, questions.size(), selectedIndex, true, completed, question.explanation());
+        return new QuizAssessment(seed, step, updatedScore, questions.size(), selectedIndex, true, completed,
+                question.explanation());
     }
 
     private static List<QuizQuestion> pickQuestions(List<QuizQuestion> allQuestions, long seed, int count) {
@@ -262,7 +274,8 @@ public final class AwarenessWebServer {
         return shuffled.subList(0, Math.min(count, shuffled.size()));
     }
 
-    private static AiAssistantState buildAiAssistantState(Section section, Map<String, List<String>> params, String method) {
+    private static AiAssistantState buildAiAssistantState(Section section, Map<String, List<String>> params,
+            String method) {
         if (section != Section.AI_ASSISTANT) {
             return new AiAssistantState("", "", "", "");
         }
@@ -279,15 +292,40 @@ public final class AwarenessWebServer {
 
     private static String faqAnswer(String faq) {
         return switch (faq) {
-            case "link-difference" -> "Aadhaar linked usually means the bank has associated Aadhaar with the account. DBT enabled is the stronger condition where the account is positioned for Aadhaar-based benefit routing through the active path.";
-            case "how-to-check" -> "Use the official resident portal path first, verify the bank shown in the result, then confirm with the bank if the shown bank does not match the bank where you expect DBT credits.";
-            case "multiple-banks" -> "If Aadhaar was shared with more than one bank over time, do not assume the newest or oldest account is active. Check the current official result and confirm the mapped destination with the bank.";
-            case "bank-change" -> "After changing banks, submit the update at the intended bank and recheck later using the official resident-facing service before expecting new DBT credits there.";
-            case "npci-mapper" -> "NPCI mapper is part of the explanation behind Aadhaar-based routing. It helps explain why a bank-linked account can still differ from the actual destination used for Aadhaar-based benefits.";
-            case "dbt-delay" -> "A DBT delay can happen because the scheme, the bank routing state, or the mapped destination is not what the resident expects. Start with the official status and then confirm with the bank.";
-            case "mobile-number" -> "The registered mobile number is important because many official resident services use OTP verification before showing status or allowing service access.";
-            case "aadhaar-number-check" -> "The Aadhaar number field in this site only checks whether the number looks like a valid 12-digit format. It does not claim to fetch live UIDAI or bank data.";
-            default -> "Use the comparison, check account, and resources phases together if you need a complete understanding of Aadhaar linking and DBT readiness.";
+            case "link-difference" ->
+                "Aadhaar linked usually means the bank has associated Aadhaar with the account. DBT enabled is the stronger condition where the account is positioned for Aadhaar-based benefit routing through the active path.";
+            case "how-to-check" ->
+                "Use the official resident portal path first, verify the bank shown in the result, then confirm with the bank if the shown bank does not match the bank where you expect DBT credits.";
+            case "multiple-banks" ->
+                "If Aadhaar was shared with more than one bank over time, do not assume the newest or oldest account is active. Check the current official result and confirm the mapped destination with the bank.";
+            case "bank-change" ->
+                "After changing banks, submit the update at the intended bank and recheck later using the official resident-facing service before expecting new DBT credits there.";
+            case "npci-mapper" ->
+                "NPCI mapper is part of the explanation behind Aadhaar-based routing. It helps explain why a bank-linked account can still differ from the actual destination used for Aadhaar-based benefits.";
+            case "dbt-delay" ->
+                "A DBT delay can happen because the scheme, the bank routing state, or the mapped destination is not what the resident expects. Start with the official status and then confirm with the bank.";
+            case "mobile-number" ->
+                "The registered mobile number is important because many official resident services use OTP verification before showing status or allowing service access.";
+            case "aadhaar-number-check" ->
+                "The Aadhaar number field in this site only checks whether the number looks like a valid 12-digit format. It does not claim to fetch live UIDAI or bank data.";
+            case "dbt-meaning" ->
+                "Direct Benefit Transfer (DBT) is a government mechanism to transfer subsidies and benefits directly into the bank accounts of beneficiaries using Aadhaar-based routing or bank account records.";
+            case "bank-visit" ->
+                "You should visit the bank if there is a mismatch between your expected bank and the official resident status result, or if you need to submit a fresh Aadhaar seeding or NPCI mapper update.";
+            case "scheme-context" ->
+                "Different government schemes may use Aadhaar differently. Some use Aadhaar-based DBT routing through NPCI mapper, while others might use your bank account number linked to Aadhaar.";
+            case "seeding-process" ->
+                "Aadhaar seeding is the process of associating a resident's Aadhaar number with their bank account record and ensuring it is active for receiving government benefits through official routing channels.";
+            case "otp-issues" ->
+                "If you don't receive an OTP, ensure your mobile number is linked to Aadhaar. You can check the network, try again later, or visit an Aadhaar Seva Kendra to verify your registered mobile number.";
+            case "mobile-update" ->
+                "To update your mobile number in Aadhaar, you must visit an authorized Aadhaar Enrolment Center or Aadhaar Seva Kendra. Use the UIDAI portal to find the nearest center or book an appointment.";
+            case "check-mapper" ->
+                "You can check your NPCI mapper status by visiting the official UIDAI website or the MyAadhaar portal. Look for 'Bank Seeded Status' under the resident services section.";
+            case "change-time" ->
+                "A bank account change for DBT usually takes 2 to 4 weeks to reflect in the official records, as both the bank and the central NPCI mapper must complete their backend updates.";
+            default ->
+                "Use the comparison, check account, and resources phases together if you need a complete understanding of Aadhaar linking and DBT readiness.";
         };
     }
 
@@ -317,10 +355,35 @@ public final class AwarenessWebServer {
         if (lower.contains("aadhaar number")) {
             return faqAnswer("aadhaar-number-check");
         }
+        if (lower.contains("what is dbt") || lower.contains("dbt meaning")) {
+            return faqAnswer("dbt-meaning");
+        }
+        if (lower.contains("visit bank") || lower.contains("go to bank") || lower.contains("branch")) {
+            return faqAnswer("bank-visit");
+        }
+        if (lower.contains("scheme") || lower.contains("government")) {
+            return faqAnswer("scheme-context");
+        }
+        if (lower.contains("seeding") || lower.contains("process")) {
+            return faqAnswer("seeding-process");
+        }
+        if (lower.contains("otp") || lower.contains("not received otp") || lower.contains("connectivity")) {
+            return faqAnswer("otp-issues");
+        }
+        if (lower.contains("update mobile") || lower.contains("phone number") || lower.contains("enrolment center")) {
+            return faqAnswer("mobile-update");
+        }
+        if (lower.contains("online") || lower.contains("myaadhaar portal") || lower.contains("check mapper")) {
+            return faqAnswer("check-mapper");
+        }
+        if (lower.contains("how long") || lower.contains("time") || lower.contains("weeks")) {
+            return faqAnswer("change-time");
+        }
         return "Use Learn for concept building, Comparison for the exact difference, Check Account for official steps, and Resources for detailed portals and reference links. For live status, always trust official portals and your bank confirmation.";
     }
 
-    private static void writeString(HttpExchange exchange, int statusCode, String contentType, String body) throws IOException {
+    private static void writeString(HttpExchange exchange, int statusCode, String contentType, String body)
+            throws IOException {
         byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
         Headers headers = exchange.getResponseHeaders();
         headers.set("Content-Type", contentType);
