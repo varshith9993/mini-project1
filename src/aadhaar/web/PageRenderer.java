@@ -675,14 +675,15 @@ public final class PageRenderer {
 
     StringBuilder feedbackOptions = new StringBuilder();
     for (int index = 0; index < question.options().size(); index++) {
-      String css = "quiz-option";
+      String css = "quiz-option feedback-state";
       if (index == question.correctIndex()) {
         css += " correct-option-reveal";
       } else if (index == quiz.selectedIndex()) {
         css += " wrong-option-reveal";
       }
-      feedbackOptions.append("<div class=\"").append(css).append("\"><span>")
-          .append(escape(question.options().get(index))).append("</span></div>");
+      feedbackOptions.append("<div class=\"").append(css).append("\">")
+          .append("<input type=\"radio\" disabled").append(index == quiz.selectedIndex() ? " checked" : "").append(">")
+          .append("<span>").append(escape(question.options().get(index))).append("</span></div>");
     }
     return """
         <section class="main-section" id="quiz-panel">
