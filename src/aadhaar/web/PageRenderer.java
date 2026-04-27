@@ -1168,6 +1168,8 @@ public final class PageRenderer {
         .check-option { display: flex; align-items: flex-start; gap: 12px; padding: 13px 15px; border-radius: 14px; background: var(--surface-soft); border: 1px solid #e3e9f6; }
         .quiz-option { display: flex; align-items: center; gap: 14px; padding: 18px 22px; border-radius: 18px; border: 1.5px solid var(--border); background: #fff; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 500; }
         .quiz-option:hover { border-color: var(--primary); background: #f8fbff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(48, 120, 223, 0.08); }
+        .feedback-state { cursor: default !important; transform: none !important; box-shadow: none !important; }
+        .feedback-state input { opacity: 0.8; }
         
         .correct-option-reveal { border-color: #10b981 !important; background: #ecfdf5 !important; color: #065f46 !important; font-weight: 700; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
         .wrong-option-reveal { border-color: #ef4444 !important; background: #fef2f2 !important; color: #991b1b !important; font-weight: 700; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1); }
